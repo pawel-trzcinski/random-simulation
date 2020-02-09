@@ -1,12 +1,14 @@
 ﻿using System;
+using System.Diagnostics;
 
 namespace RandomSimulation
 {
-    class Program
+    public static class Program
     {
-        static void Main(string[] args)
+        [MTAThread]
+        public static void Main(string[] args)
         {
-            Console.WriteLine("Hello World!");
+            Trace.WriteLine(Engine.TestModule.hello("Pawel"));
         }
     }
 }
