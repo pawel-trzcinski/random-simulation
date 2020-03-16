@@ -1,9 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.ObjectModel;
-using System.Globalization;
-using System.Linq;
 using Newtonsoft.Json;
+using RandomSimulationEngine.Configuration.ImageDownload;
 
 namespace RandomSimulationEngine.Configuration
 {
@@ -12,57 +9,42 @@ namespace RandomSimulationEngine.Configuration
     /// </summary>
     public class RandomSimulationConfiguration
     {
+#warning TODO - unit tests
         public ThrottlingConfiguration Throttling { get; }
 
-        /// <summary>
-        /// Gets collection of possible <see cref="NamePart"/> combinations along with weight associated to it.
-        /// </summary>
-        public IReadOnlyCollection<string> FrameGrabUrls { get; }
+        public ImageDownloadConfiguration ImageDownload { get; }
 
-        /// <summary>
-        /// Gets dictionary of available words to pull from. The words are normalized (first letter is big, the rest are small).
-        /// </summary>
-        //public IReadOnlyDictionary<NamePart, IReadOnlyCollection<string>> WordsSet { get; }
+        public TasksConfiguration Tasks { get; }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="RandomSimulationConfiguration"/> class.
         /// </summary>
-        /// <param name="combinations">Collection of possible <see cref="NamePart"/> combinations along with weight associated to it.</param>
-        /// <param name="wordsSet">Dictionary of available words to pull from.</param>
         [JsonConstructor]
-        public RandomSimulationConfiguration(ThrottlingConfiguration throttling, string[] frameGrabUrls)//, Dictionary<NamePart, string[]> wordsSet)
+        public RandomSimulationConfiguration(ThrottlingConfiguration throttling, ImageDownloadConfiguration imageDownload, TasksConfiguration tasks)
         {
-#warning TODO
             this.Throttling = throttling;
-            this.FrameGrabUrls = new ReadOnlyCollection<string>(frameGrabUrls);
-            //this.WordsSet = wordsSet.ToDictionary
-            //    (
-            //        k => k.Key,
-            //        v => (IReadOnlyCollection<string>)new ReadOnlyCollection<string>(v.Value.SelectMany(SplitIntoWords).Select(NormalizeWord).ToArray())
-            //    );
+            this.ImageDownload = imageDownload;
+            this.Tasks = tasks;
 
             ValidateConfiguration();
         }
 
-        
         private void ValidateConfiguration()
         {
-            if(this.FrameGrabUrls.Count <= 0)
+            if (Throttling == null)
             {
-                throw new ArgumentException("No FrameGrabUrls defined");
+                throw new ArgumentNullException(nameof(Throttling));
             }
 
-#warning TODO
-            //foreach (string word in this.WordsSet.Values.SelectMany(p => p))
-            //{
-            //    foreach (char wordCharacter in word)
-            //    {
-            //        if (!allowedCharacters.Contains(wordCharacter))
-            //        {
-            //            throw new ArgumentException($"Invalid character '{wordCharacter}' in word {word}");
-            //        }
-            //    }
-            //}
+            if (ImageDownload == null)
+            {
+                throw new ArgumentNullException(nameof(ImageDownload));
+            }
+
+            if (Tasks == null)
+            {
+                throw new ArgumentNullException(nameof(Tasks));
+            }
         }
     }
 }

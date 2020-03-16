@@ -1,5 +1,4 @@
 ﻿using RandomSimulationEngine.Rest.HeaderAttributes;
-using log4net;
 using Microsoft.AspNetCore.Mvc;
 using RandomSimulationEngine.ValueCalculator;
 using System.Globalization;
@@ -54,12 +53,12 @@ namespace RandomSimulationEngine.Rest
             return Content(this.valueCalculator.GetInt32(this.randomBytesPuller.Pull(4)).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
-        [HttpGet("next/{min}")]
+        [HttpGet("next/{max}")]
         [AddCorsHeader]
         [AddGitHubHeader]
-        public ContentResult Next([FromRoute] int min)
+        public ContentResult Next([FromRoute] int max)
         {
-            return Content(this.valueCalculator.GetInt32(this.randomBytesPuller.Pull(4), min).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
+            return Content(this.valueCalculator.GetInt32(this.randomBytesPuller.Pull(4), max).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next/{min}/{max}")]

@@ -1,57 +1,93 @@
-﻿using RandomSimulationEngine.Configuration;
-using RandomSimulationEngine.Rest;
+﻿using System.Threading;
+using RandomSimulationEngine.Configuration;
 using log4net;
 using Microsoft.AspNetCore;
 using Microsoft.AspNetCore.Hosting;
-using SimpleInjector;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
+using RandomSimulationEngine.Factories.ImageDownload;
+using RandomSimulationEngine.RandomBytesPuller;
 using RandomSimulationEngine.Rest.Throttling.Middlewares;
+using RandomSimulationEngine.Tasks;
 
 namespace RandomSimulationEngine
 {
     /// <summary>
     /// Main engine of the app. It contains all the bad, non-injectable stuff.
     /// </summary>
-    public static class Engine
+    public class Engine : IEngine
     {
-#warning TODO - jakoś to ładniej opakować, żeby się ładni enajpierw w tle workery odpalały a potem się hostowało, no i graceful shutdown ma być
+#warning TODO - unit tests
 
-        private static readonly ILog log = LogManager.GetLogger(typeof(Engine));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(Engine));
 
-        private static IWebHost webHost;
+        private IWebHost _webHost;
 
-        /// <summary>
-        /// Gets main <see cref="SimpleInjector"/> container.
-        /// </summary>
-        public static Container InjectionContainer { get; } = new Container();
+        private readonly IConfigurationReader _configurationReader;
+        private readonly IControllerFactory _controllerFactory;
+        private readonly IImageDownloadTaskFactory _imageDownloadTaskFactory;
+        private readonly ITaskMaster _taskMaster;
+        private readonly IRandomBytesPuller _randomBytesPuller;
 
-        /// <summary>
-        /// Initialize <see cref="SimpleInjector"/>'s container. Should be executed at the beginning of the application.
-        /// </summary>
-        public static void InitializeContainer()
+        private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+
+        public Engine
+        (
+            IConfigurationReader configurationReader,
+            IControllerFactory controllerFactory,
+            IImageDownloadTaskFactory imageDownloadTaskFactory,
+            ITaskMaster taskMaster,
+            IRandomBytesPuller randomBytesPuller
+        )
         {
-            InjectionContainer.Options.DefaultScopedLifestyle = ScopedLifestyle.Flowing;
+            _configurationReader = configurationReader;
+            _controllerFactory = controllerFactory;
+            _imageDownloadTaskFactory = imageDownloadTaskFactory;
+            _taskMaster = taskMaster;
+            _randomBytesPuller = randomBytesPuller;
+        }
 
-            InjectionContainer.RegisterSingleton<IConfigurationReader, ConfigurationReader>();
-            //InjectionContainer.RegisterSingleton<IRandomNamePuller, RandomNamePuller>();
-            //InjectionContainer.RegisterSingleton<IHtmlBuilder, HtmlBuilder>();
+        public void Start()
+        {
+            _log.Info("Starting data acquisition");
+            StartDataAcquisition();
 
-            InjectionContainer.Register<IRandomSimulationController, RandomSimulationController>(Lifestyle.Scoped);
+            _log.Info("Starting engine hosting");
+            StartHosting();
+        }
 
-            log.Debug("Container verification attempt");
-            InjectionContainer.Verify();
+        public void Stop()
+        {
+            _log.Info("Stopping data acquisition");
+            StopDataAcquisition();
+
+            _log.Info("Stopping engine hosting");
+            StopHosting();
+        }
+
+        private void StartDataAcquisition()
+        {
+            _log.Info($"Creating tasks of count {_configurationReader.Configuration.ImageDownload.FrameGrabUrls.Count}");
+            foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls)
+            {
+                ISourceTask sourceTask = _imageDownloadTaskFactory.GetNewTask(url);
+
+                _taskMaster.Register(sourceTask);
+                _randomBytesPuller.Register(sourceTask);
+            }
+
+            _taskMaster.StartTasks(_tokenSource.Token);
         }
 
         /// <summary>
         /// Start REST service hosting.
         /// </summary>
-        public static void StartHosting()
+        private void StartHosting()
         {
-            ThrottlingConfiguration throttling = InjectionContainer.GetInstance<ConfigurationReader>().ReadConfiguration().Throttling;
+            ThrottlingConfiguration throttling = _configurationReader.Configuration.Throttling;
 
-            webHost = WebHost.CreateDefaultBuilder(null)
+            _webHost = WebHost.CreateDefaultBuilder(null)
                 .UseKestrel(options =>
                 {
                     options.AddServerHeader = false;
@@ -59,9 +95,9 @@ namespace RandomSimulationEngine
                 })
                 .ConfigureServices(services =>
                 {
-                    log.Debug("Startup.ConfigureServices");
+                    _log.Debug("Startup.ConfigureServices");
 
-                    services.AddSingleton<IControllerFactory, ControllerFactory>();
+                    services.AddSingleton<IControllerFactory>(s => _controllerFactory);
                     services.AddLogging();
                     services.AddMvc();
                 })
@@ -71,16 +107,21 @@ namespace RandomSimulationEngine
                     app.UseMvc();
                 })
                 .Build();
-            webHost.Run();
+            _webHost.Run();
         }
 
         /// <summary>
         /// Stops REST service hosting.
         /// </summary>
-        public static void StopHosting()
+        private void StopHosting()
         {
-            log.Info("Hosting stoppingt");
-            webHost.StopAsync().Wait();
+            _log.Info("Hosting stopping");
+            _webHost.StopAsync().Wait();
+        }
+
+        private void StopDataAcquisition()
+        {
+            _tokenSource.Cancel();
         }
     }
 }

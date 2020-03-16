@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SeaChange.Prodis.ProdisCommon.Rest.Throttling
+namespace RandomSimulationEngine.Rest.Throttling
 {
     public interface IThrottlingOptions
     {

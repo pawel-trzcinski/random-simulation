@@ -10,12 +10,43 @@ namespace RandomSimulationEngine.Configuration
     /// </summary>
     public class ConfigurationReader : IConfigurationReader
     {
-        private static readonly ILog log = LogManager.GetLogger(typeof(ConfigurationReader));
+        private static readonly ILog _log = LogManager.GetLogger(typeof(ConfigurationReader));
 
-        private static readonly object lockObject = new object();
-        private volatile RandomSimulationConfiguration classNamerConfiguration;
+        private static readonly object _lockObject = new object();
+        private volatile RandomSimulationConfiguration _classNamerConfiguration;
 
-        private readonly string settingsFile;
+        private readonly string _settingsFile;
+
+        public RandomSimulationConfiguration Configuration
+        {
+            get
+            {
+                if (this._classNamerConfiguration != null)
+                {
+                    return this._classNamerConfiguration;
+                }
+
+                lock (_lockObject)
+                {
+                    if (this._classNamerConfiguration != null)
+                    {
+                        return this._classNamerConfiguration;
+                    }
+
+                    _log.Info($"Reading configuration from {_settingsFile}");
+
+                    string jsonText = File.ReadAllText(_settingsFile);
+                    JObject settings = JObject.Parse(jsonText);
+
+                    _log.Debug($"Configuration from file: {settings}");
+
+                    this._classNamerConfiguration = settings[nameof(RandomSimulationConfiguration)]
+                        .ToObject<RandomSimulationConfiguration>();
+                }
+
+                return this._classNamerConfiguration;
+            }
+        }
 
         /// <summary>
         /// Initializes a new instance of the <see cref="ConfigurationReader"/> class.
@@ -31,35 +62,7 @@ namespace RandomSimulationEngine.Configuration
         /// <param name="settingsFile">File to read configuration from.</param>
         protected ConfigurationReader(string settingsFile)
         {
-            this.settingsFile = settingsFile;
-        }
-
-        /// <inheritdoc/>
-        public RandomSimulationConfiguration ReadConfiguration()
-        {
-            if (this.classNamerConfiguration != null)
-            {
-                return this.classNamerConfiguration;
-            }
-
-            lock (lockObject)
-            {
-                if (this.classNamerConfiguration != null)
-                {
-                    return this.classNamerConfiguration;
-                }
-
-                log.Info($"Reading configuration from {settingsFile}");
-
-                string jsonText = File.ReadAllText(settingsFile);
-                JObject settings = JObject.Parse(jsonText);
-
-                log.Debug($"Configuration from file: {settings.ToString()}");
-
-                this.classNamerConfiguration = settings[nameof(RandomSimulationConfiguration)].ToObject<RandomSimulationConfiguration>();
-            }
-
-            return this.classNamerConfiguration;
+            this._settingsFile = settingsFile;
         }
     }
 }

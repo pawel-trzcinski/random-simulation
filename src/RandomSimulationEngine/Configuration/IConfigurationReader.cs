@@ -9,6 +9,6 @@
         /// Reads configuration from appsettings.json file.
         /// </summary>
         /// <returns>Bussiness configuration of the ClassNamer.</returns>
-        RandomSimulationConfiguration ReadConfiguration();
+        RandomSimulationConfiguration Configuration { get; }
     }
 }
