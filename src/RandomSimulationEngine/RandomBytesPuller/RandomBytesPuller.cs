@@ -27,6 +27,7 @@ namespace RandomSimulationEngine.RandomBytesPuller
         /// <exception cref="NoDataException">Puller is unable to find source with available data and enough bytes to fetch.</exception>
         public byte[] Pull(int count)
         {
+#warning TEST
             foreach (ISingleSourceBytesProvider provider in _providers.Where(p => p.IsDataAvailable).OrderBy(p => _randomService.Next()))
             {
                 byte[] bytes = provider.GetBytes(count);

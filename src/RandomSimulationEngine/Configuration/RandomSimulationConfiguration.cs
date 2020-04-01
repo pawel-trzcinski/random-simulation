@@ -5,7 +5,7 @@ using RandomSimulationEngine.Configuration.ImageDownload;
 namespace RandomSimulationEngine.Configuration
 {
     /// <summary>
-    /// Main configuration class for all ClassNamer bussiness logic.
+    /// Main configuration class for all RandomSimulation bussiness logic.
     /// </summary>
     public class RandomSimulationConfiguration
     {

@@ -7,6 +7,7 @@ namespace RandomSimulationEngine.ValueCalculator
 #warning TODO - unit tests
         public double GetDouble(byte[] bytes)
         {
+#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -22,6 +23,7 @@ namespace RandomSimulationEngine.ValueCalculator
 
         public int GetInt32(byte[] bytes)
         {
+#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -37,6 +39,7 @@ namespace RandomSimulationEngine.ValueCalculator
 
         public int GetInt32(byte[] bytes, int max)
         {
+#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -52,6 +55,7 @@ namespace RandomSimulationEngine.ValueCalculator
 
         public int GetInt32(byte[] bytes, int min, int max)
         {
+#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -67,6 +71,7 @@ namespace RandomSimulationEngine.ValueCalculator
 
         private static int Normalize(int value, int min, int max)
         {
+#warning TEST
             if (max <= min)
             {
                 throw new ArgumentException($"{nameof(max)} has to be grater than {nameof(min)}", nameof(max));

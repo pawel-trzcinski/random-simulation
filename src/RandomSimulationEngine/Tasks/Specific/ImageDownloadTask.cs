@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Cryptography;
 using System.Threading;
+using System.Threading.Tasks;
 using JetBrains.Annotations;
 using log4net;
 using RandomSimulationEngine.Configuration;
@@ -25,7 +26,7 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         private readonly string _url;
 
-        private static readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
 
         private volatile bool _isDataAvailable;
         public bool IsDataAvailable => _isDataAvailable;
@@ -35,6 +36,10 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         private byte[] _previousImage;
         private readonly ConcurrentLimitedByteQueue _queue;
+
+        private Task _mainTask;
+
+        public bool IsAlive => _mainTask.Status == TaskStatus.Running;
 
         public ImageDownloadTask(IWebClientWrapper webClientWrapper, IRandomService randomService, IConfigurationReader configurationReader, string url)
         {
@@ -46,6 +51,11 @@ namespace RandomSimulationEngine.Tasks.Specific
         }
 
         public void Start(CancellationToken cancellationToken)
+        {
+            _mainTask = Task.Run(() => TaskThread(cancellationToken), cancellationToken);
+        }
+
+        private void TaskThread(CancellationToken cancellationToken)
         {
             try
             {
@@ -82,10 +92,11 @@ namespace RandomSimulationEngine.Tasks.Specific
                         }
 
                         byte[] noise = GetNoise(bytes);
-                        // remove bytes from memory
-                        for (int i = 0; i < bytes.Length; i++)
+                        
+                        // remove previous bytes from memory
+                        for (int i = 0; i < _previousImage.Length; i++)
                         {
-                            bytes[i]= 0;
+                            _previousImage[i] = 0;
                         }
 
                         _previousImage = bytes;
@@ -97,7 +108,7 @@ namespace RandomSimulationEngine.Tasks.Specific
                         {
                             _randomService.SetSeed(BitConverter.ToInt32(randomSeed, 0));
                         }
-                        
+
                         // remove noise from memory
                         for (int i = 0; i < noise.Length; i++)
                         {
@@ -218,6 +229,7 @@ namespace RandomSimulationEngine.Tasks.Specific
         [CanBeNull]
         public byte[] GetBytes(int count)
         {
+#warning TEST
             int queueCount = _queue.Count;
             if (queueCount < count)
             {

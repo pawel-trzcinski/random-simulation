@@ -13,7 +13,7 @@ namespace RandomSimulationEngine.Configuration
         private static readonly ILog _log = LogManager.GetLogger(typeof(ConfigurationReader));
 
         private static readonly object _lockObject = new object();
-        private volatile RandomSimulationConfiguration _classNamerConfiguration;
+        private volatile RandomSimulationConfiguration _randomSimulationConfiguration;
 
         private readonly string _settingsFile;
 
@@ -21,16 +21,16 @@ namespace RandomSimulationEngine.Configuration
         {
             get
             {
-                if (this._classNamerConfiguration != null)
+                if (this._randomSimulationConfiguration != null)
                 {
-                    return this._classNamerConfiguration;
+                    return this._randomSimulationConfiguration;
                 }
 
                 lock (_lockObject)
                 {
-                    if (this._classNamerConfiguration != null)
+                    if (this._randomSimulationConfiguration != null)
                     {
-                        return this._classNamerConfiguration;
+                        return this._randomSimulationConfiguration;
                     }
 
                     _log.Info($"Reading configuration from {_settingsFile}");
@@ -40,11 +40,11 @@ namespace RandomSimulationEngine.Configuration
 
                     _log.Debug($"Configuration from file: {settings}");
 
-                    this._classNamerConfiguration = settings[nameof(RandomSimulationConfiguration)]
+                    this._randomSimulationConfiguration = settings[nameof(RandomSimulationConfiguration)]
                         .ToObject<RandomSimulationConfiguration>();
                 }
 
-                return this._classNamerConfiguration;
+                return this._randomSimulationConfiguration;
             }
         }
 

@@ -3,13 +3,13 @@ using Microsoft.AspNetCore.Mvc;
 using RandomSimulationEngine.ValueCalculator;
 using System.Globalization;
 using System;
+using RandomSimulationEngine.Health;
 using RandomSimulationEngine.RandomBytesPuller;
-using System.ComponentModel.DataAnnotations;
 
 namespace RandomSimulationEngine.Rest
 {
     /// <summary>
-    /// Default ClassNamer controller.
+    /// Default RandomSimulation controller.
     /// </summary>
     public class RandomSimulationController : Controller, IRandomSimulationController
     {
@@ -24,15 +24,17 @@ namespace RandomSimulationEngine.Rest
         /// </summary>
         public const string TEXT_PLAIN = "text/plain";
 
-        private static readonly string robotsContent = System.IO.File.ReadAllText("robots.txt");
+        private static readonly string _robotsContent = System.IO.File.ReadAllText("robots.txt");
 
-        private readonly IValueCalculator valueCalculator;
-        private readonly IRandomBytesPuller randomBytesPuller;
+        private readonly IValueCalculator _valueCalculator;
+        private readonly IRandomBytesPuller _randomBytesPuller;
+        private readonly IHealthChecker _healthChecker;
 
-        public RandomSimulationController(IValueCalculator valueCalculator, IRandomBytesPuller randomBytesPuller)
+        public RandomSimulationController(IValueCalculator valueCalculator, IRandomBytesPuller randomBytesPuller, IHealthChecker healthChecker)
         {
-            this.valueCalculator = valueCalculator;
-            this.randomBytesPuller = randomBytesPuller;
+            this._valueCalculator = valueCalculator;
+            this._randomBytesPuller = randomBytesPuller;
+            this._healthChecker = healthChecker;
         }
 
         /// <summary>
@@ -50,7 +52,7 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult Next()
         {
-            return Content(this.valueCalculator.GetInt32(this.randomBytesPuller.Pull(4)).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
+            return Content(this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4)).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next/{max}")]
@@ -58,7 +60,7 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult Next([FromRoute] int max)
         {
-            return Content(this.valueCalculator.GetInt32(this.randomBytesPuller.Pull(4), max).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
+            return Content(this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4), max).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next/{min}/{max}")]
@@ -66,7 +68,7 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult Next([FromRoute]int min, [FromRoute]int max)
         {
-            return Content(this.valueCalculator.GetInt32(this.randomBytesPuller.Pull(4), min, max).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
+            return Content(this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4), min, max).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next-double")]
@@ -74,25 +76,30 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult NextDouble()
         {
-            return Content(this.valueCalculator.GetDouble(this.randomBytesPuller.Pull(8)).ToString("G17", CultureInfo.InvariantCulture), TEXT_PLAIN);
+            return Content(this._valueCalculator.GetDouble(this._randomBytesPuller.Pull(8)).ToString("G17", CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
-        [HttpGet("next-bytes/{count}")]
+        [HttpGet("next-bytes/{count:range(1,50)}")]
         [AddCorsHeader]
         [AddGitHubHeader]
-        public ContentResult NextBytes([FromRoute][Range(1, 50)]int count)
+        public ContentResult NextBytes([FromRoute]int count)
         {
-#warning TODO - check czy ten Range tutaj działa
-            return Content(Convert.ToBase64String(this.randomBytesPuller.Pull(count)), TEXT_PLAIN);
+            return Content(Convert.ToBase64String(this._randomBytesPuller.Pull(count)), TEXT_PLAIN);
         }
 
         [HttpGet("health")]
         [AddCorsHeader]
         [AddGitHubHeader]
-        public ContentResult Health()
+        public IActionResult Health()
         {
-#warning TODO - sources health check - ale tylko generalnie, żeby nie zdradzać jakie ani nawet ile; tylko np FULL, PRAWIE FULL, NIEZABARDZO, PRAWIE TRUP, TRUP
-            return null;
+            HealthStatus healthStatus = _healthChecker.GetHealthStatus();
+
+            if (healthStatus == HealthStatus.Dead)
+            {
+                return StatusCode(500);
+            }
+
+            return Content(((int) healthStatus).ToString());
         }
 
         /// <summary>
@@ -102,7 +109,7 @@ namespace RandomSimulationEngine.Rest
         [HttpGet("robots.txt")]
         public ContentResult Robots()
         {
-            return Content(robotsContent, TEXT_PLAIN);
+            return Content(_robotsContent, TEXT_PLAIN);
         }
     }
 }

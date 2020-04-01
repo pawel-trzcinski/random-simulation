@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System.Linq;
+using System.Threading;
 using RandomSimulationEngine.Configuration;
 using log4net;
 using Microsoft.AspNetCore;
@@ -6,7 +7,9 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Mvc.Controllers;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.OpenApi.Models;
 using RandomSimulationEngine.Factories.ImageDownload;
+using RandomSimulationEngine.Health;
 using RandomSimulationEngine.RandomBytesPuller;
 using RandomSimulationEngine.Rest.Throttling.Middlewares;
 using RandomSimulationEngine.Tasks;
@@ -29,6 +32,7 @@ namespace RandomSimulationEngine
         private readonly IImageDownloadTaskFactory _imageDownloadTaskFactory;
         private readonly ITaskMaster _taskMaster;
         private readonly IRandomBytesPuller _randomBytesPuller;
+        private readonly IHealthChecker _healthChecker;
 
         private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
 
@@ -38,7 +42,8 @@ namespace RandomSimulationEngine
             IControllerFactory controllerFactory,
             IImageDownloadTaskFactory imageDownloadTaskFactory,
             ITaskMaster taskMaster,
-            IRandomBytesPuller randomBytesPuller
+            IRandomBytesPuller randomBytesPuller,
+            IHealthChecker healthChecker
         )
         {
             _configurationReader = configurationReader;
@@ -46,6 +51,7 @@ namespace RandomSimulationEngine
             _imageDownloadTaskFactory = imageDownloadTaskFactory;
             _taskMaster = taskMaster;
             _randomBytesPuller = randomBytesPuller;
+            _healthChecker = healthChecker;
         }
 
         public void Start()
@@ -69,12 +75,15 @@ namespace RandomSimulationEngine
         private void StartDataAcquisition()
         {
             _log.Info($"Creating tasks of count {_configurationReader.Configuration.ImageDownload.FrameGrabUrls.Count}");
-            foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls)
+#warning DEBUG !!!!!
+            foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls.Take(1))
+            //foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls)
             {
                 ISourceTask sourceTask = _imageDownloadTaskFactory.GetNewTask(url);
 
                 _taskMaster.Register(sourceTask);
                 _randomBytesPuller.Register(sourceTask);
+                _healthChecker.Register(sourceTask);
             }
 
             _taskMaster.StartTasks(_tokenSource.Token);
@@ -100,11 +109,22 @@ namespace RandomSimulationEngine
                     services.AddSingleton<IControllerFactory>(s => _controllerFactory);
                     services.AddLogging();
                     services.AddMvc();
+
+                    services.AddSwaggerGen(c =>
+                    {
+                        c.SwaggerDoc("random-simulation", new OpenApiInfo { Title = "Random Simulation", Version = "v1" });
+                    });
                 })
                 .Configure(app =>
                 {
                     app.UseMiddleware<ThrottlingMiddleware>(throttling);
                     app.UseMvc();
+                    app.UseSwagger();
+
+                    app.UseSwaggerUI(c =>
+                    {
+                        c.SwaggerEndpoint("/swagger/random-simulation/swagger.json", "Random Simulation");
+                    });
                 })
                 .Build();
             _webHost.Run();
@@ -115,12 +135,14 @@ namespace RandomSimulationEngine
         /// </summary>
         private void StopHosting()
         {
+#warning TEST
             _log.Info("Hosting stopping");
             _webHost.StopAsync().Wait();
         }
 
         private void StopDataAcquisition()
         {
+#warning TEST
             _tokenSource.Cancel();
         }
     }

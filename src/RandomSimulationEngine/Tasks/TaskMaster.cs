@@ -4,24 +4,31 @@ using System.Threading;
 using System.Threading.Tasks;
 using log4net;
 using RandomSimulationEngine.Configuration;
+using RandomSimulationEngine.DateTime;
 
 namespace RandomSimulationEngine.Tasks
 {
     public class TaskMaster : ITaskMaster
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(TaskMaster));
-#warning TODO
+#warning TODO - unit tests
+
+        private readonly IDateTimeService _dateTimeService;
+
         private readonly LinkedList<IPokableTask> _tasks = new LinkedList<IPokableTask>();
         private readonly object _lockObject = new object();
 
         private readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(1);
+        private readonly TimeSpan _checkAfterPokeInterval = TimeSpan.FromSeconds(2);
         private readonly TimeSpan _errorInterval = TimeSpan.FromSeconds(10);
 
+        private System.DateTime _lastExecutionTime = System.DateTime.UtcNow;
         private readonly TimeSpan _idleTimeAllowed;
 
-        public TaskMaster(IConfigurationReader configurationReader)
+        public TaskMaster(IConfigurationReader configurationReader, IDateTimeService dateTimeService)
         {
             this._idleTimeAllowed = configurationReader.Configuration.Tasks.IdleTimeAllowed;
+            this._dateTimeService = dateTimeService;
         }
 
         public void Register(IPokableTask pokableTask)
@@ -35,10 +42,12 @@ namespace RandomSimulationEngine.Tasks
 
         private void PokableTaskOnExecutionFinished(object sender, EventArgs e)
         {
+#warning TEST
             try
             {
                 if (sender is IPokableTask pokableTask)
                 {
+#warning CHECK - jakiś deadlock?
                     lock (_lockObject)
                     {
                         if (!_tasks.Remove(pokableTask))
@@ -47,6 +56,7 @@ namespace RandomSimulationEngine.Tasks
                         }
 
                         _tasks.AddFirst(pokableTask);
+                        _lastExecutionTime = _dateTimeService.UtcNow;
                     }
                 }
             }
@@ -64,9 +74,11 @@ namespace RandomSimulationEngine.Tasks
                 {
                     task.Start(cancellationToken);
                 }
+
+                _lastExecutionTime = _dateTimeService.UtcNow;
             }
 
-            Task.Run(()=>PokerRoutine(cancellationToken), cancellationToken);
+            Task.Run(() => PokerRoutine(cancellationToken), cancellationToken);
         }
 
         private void PokerRoutine(CancellationToken cancellationToken)
@@ -83,9 +95,30 @@ namespace RandomSimulationEngine.Tasks
                     TimeSpan checkInterval = _checkInterval;
                     try
                     {
-                        // TaskMaster should register some methods or tokens that IPokableTask will be using to tell if it's running or not and what time did it finish last execution
-                        // do last execution by means of LinkedList - finish executing - find task in the list and put it first. The last task in List (if not running) is the one
-#warning TODO
+                        lock (_lockObject)
+                        {
+                            TimeSpan timeFromLastExecution = _dateTimeService.UtcNow - _lastExecutionTime;
+
+                            if (timeFromLastExecution > _idleTimeAllowed)
+                            {
+                                // idle time exeeded; find last non-running
+                                LinkedListNode<IPokableTask> current = _tasks.Last;
+
+                                while (current != null)
+                                {
+                                    if (!current.Value.IsRunning)
+                                    {
+                                        // this is the task that does not run the longest
+                                        current.Value.Poke();
+                                        checkInterval = _checkAfterPokeInterval; // wait a little bit longer after poking
+                                    }
+                                    else
+                                    {
+                                        current = current.Previous;
+                                    }
+                                }
+                            }
+                        }
                     }
                     catch (Exception ex)
                     {

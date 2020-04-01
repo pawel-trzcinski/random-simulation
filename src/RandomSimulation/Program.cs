@@ -16,16 +16,15 @@ namespace RandomSimulation
         private static Task _mainTask;
         private static IEngine _engine;
 
-#warning TODO - konfigurowalna ilość równoczesnego ściągania i liczenia
+#warning TODO - testy organoleptyczne
+
+#warning TODO - dodac wszedize logowanie jakieś sensowne
+
+#warning TODO - unit testy
+
+#warning TODO - docker
 
 #warning TODO - rotacja logów dockera na hoście: https: //stackoverflow.com/questions/42510002/how-to-clear-the-logs-properly-for-a-docker-container
-
-#warning todo - throttling - Ograniczenia loadu na sekundę (konfigurowalne) - middleware
-
-#warning TODO - dodać na koniec FxCop i StyleCop do wsiech projektów
-#warning TODO - wyszukać czy gdzieś nie zostały stringi ClassNamer
-
-#warning TODO - dodać Swagger ui
 
 #warning TODO - spłodzić Readme.md
 
@@ -72,6 +71,8 @@ namespace RandomSimulation
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
+#warning TEST
+
             try
             {
                 _log.Info("Process exiting");
@@ -93,6 +94,8 @@ namespace RandomSimulation
 
         private static void OnExit(object sender, ConsoleCancelEventArgs args)
         {
+#warning TEST
+
             _log.Info("Exit invoked");
             _closing.Set();
         }

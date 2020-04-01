@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc.Controllers;
 using RandomSimulationEngine.Configuration;
 using RandomSimulationEngine.DateTime;
 using RandomSimulationEngine.Factories.ImageDownload;
+using RandomSimulationEngine.Health;
 using RandomSimulationEngine.Random;
 using RandomSimulationEngine.RandomBytesPuller;
 using RandomSimulationEngine.Rest;
@@ -33,6 +34,7 @@ namespace RandomSimulationEngine
 
             container.RegisterSingleton<IValueCalculator, ValueCalculator.ValueCalculator>();
             container.RegisterSingleton<IRandomBytesPuller, RandomBytesPuller.RandomBytesPuller>();
+            container.RegisterSingleton<IHealthChecker, HealthChecker>();
 
             container.Register<IRandomSimulationController, RandomSimulationController>(Lifestyle.Scoped);
             container.RegisterSingleton<IControllerFactory, ControllerFactory>();

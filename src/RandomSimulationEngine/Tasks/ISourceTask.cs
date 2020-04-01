@@ -1,6 +1,8 @@
-﻿namespace RandomSimulationEngine.Tasks
+﻿using RandomSimulationEngine.Health;
+
+namespace RandomSimulationEngine.Tasks
 {
-    public interface ISourceTask : IPokableTask, ISingleSourceBytesProvider
+    public interface ISourceTask : IPokableTask, ISingleSourceBytesProvider, IHealthProvider
     {
     }
 }
