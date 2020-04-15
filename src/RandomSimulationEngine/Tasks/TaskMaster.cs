@@ -47,12 +47,12 @@ namespace RandomSimulationEngine.Tasks
             {
                 if (sender is IPokableTask pokableTask)
                 {
-#warning CHECK - jakiś deadlock?
+#warning CHECK - jakiś deadlock? - INFINITE LOCK!!! crap - trzeba może lepiej przeprojektować tą klasę ( w szczególności synchronizację i struktury danych)
                     lock (_lockObject)
                     {
                         if (!_tasks.Remove(pokableTask))
                         {
-                            throw new InvalidOperationException("Task finished ws not registered correctly");
+                            throw new InvalidOperationException("Task finished was not registered correctly");
                         }
 
                         _tasks.AddFirst(pokableTask);

@@ -7,15 +7,13 @@ namespace RandomSimulationEngine.Configuration
     [JsonObject(nameof(RandomSimulationConfiguration.Throttling))]
     public class ThrottlingConfiguration : IThrottlingOptions
     {
-#warning TODO - unit tests
         public int ConcurrentRequestsLimit { get; }
         public int QueueLimit { get; }
         public TimeSpan QueueTimeout { get; }
         public long MaximumServerConnections { get; }
 
         [JsonConstructor]
-        public ThrottlingConfiguration(int concurrentRequestsLimit, int queueLimit, int queueTimeoutS,
-            int maximumServerConnections)
+        public ThrottlingConfiguration(int concurrentRequestsLimit, int queueLimit, int queueTimeoutS, int maximumServerConnections)
         {
             ConcurrentRequestsLimit = concurrentRequestsLimit;
             QueueLimit = queueLimit;

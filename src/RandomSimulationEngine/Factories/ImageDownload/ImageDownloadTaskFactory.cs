@@ -8,7 +8,6 @@ namespace RandomSimulationEngine.Factories.ImageDownload
 {
     public class ImageDownloadTaskFactory : IImageDownloadTaskFactory
     {
-#warning TODO - unit tests
         private readonly IRandomService _randomService;
         private readonly IConfigurationReader _configurationReader;
 

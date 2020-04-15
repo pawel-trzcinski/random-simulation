@@ -16,11 +16,7 @@ namespace RandomSimulation
         private static Task _mainTask;
         private static IEngine _engine;
 
-#warning TODO - testy organoleptyczne
-
 #warning TODO - dodac wszedize logowanie jakieś sensowne
-
-#warning TODO - unit testy
 
 #warning TODO - docker
 
@@ -71,8 +67,6 @@ namespace RandomSimulation
 
         private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
         {
-#warning TEST
-
             try
             {
                 _log.Info("Process exiting");
@@ -94,8 +88,6 @@ namespace RandomSimulation
 
         private static void OnExit(object sender, ConsoleCancelEventArgs args)
         {
-#warning TEST
-
             _log.Info("Exit invoked");
             _closing.Set();
         }

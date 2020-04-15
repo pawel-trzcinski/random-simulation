@@ -21,8 +21,6 @@ namespace RandomSimulationEngine
     /// </summary>
     public class Engine : IEngine
     {
-#warning TODO - unit tests
-
         private static readonly ILog _log = LogManager.GetLogger(typeof(Engine));
 
         private IWebHost _webHost;
@@ -106,7 +104,7 @@ namespace RandomSimulationEngine
                 {
                     _log.Debug("Startup.ConfigureServices");
 
-                    services.AddSingleton<IControllerFactory>(s => _controllerFactory);
+                    services.AddSingleton(s => _controllerFactory);
                     services.AddLogging();
                     services.AddMvc();
 
@@ -135,14 +133,12 @@ namespace RandomSimulationEngine
         /// </summary>
         private void StopHosting()
         {
-#warning TEST
             _log.Info("Hosting stopping");
             _webHost.StopAsync().Wait();
         }
 
         private void StopDataAcquisition()
         {
-#warning TEST
             _tokenSource.Cancel();
         }
     }

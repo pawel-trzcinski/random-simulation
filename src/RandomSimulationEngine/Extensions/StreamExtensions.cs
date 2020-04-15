@@ -7,7 +7,8 @@ namespace RandomSimulationEngine.Extensions
 {
     public static class StreamExtensions
     {
-#warning TODO - unit tests
+        public const int COPY_BUFFER_SIZE = 4 * 1024;
+
         public static void CopyTo(this Stream source, [NotNull] Stream destination, CancellationToken cancellationToken)
         {
             if (destination == null)
@@ -20,9 +21,9 @@ namespace RandomSimulationEngine.Extensions
                 return;
             }
 
-            byte[] buffer = new byte[4 * 1024];
+            byte[] buffer = new byte[COPY_BUFFER_SIZE];
             int read;
-            while ((read = source.Read(buffer, 0, buffer.Length)) > 0)
+            while ((read = source.Read(buffer, 0, COPY_BUFFER_SIZE)) > 0)
             {
                 if (cancellationToken.IsCancellationRequested)
                 {

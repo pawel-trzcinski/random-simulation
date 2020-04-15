@@ -5,8 +5,7 @@ namespace RandomSimulationEngine.Health
 {
     public class HealthChecker : IHealthChecker
     {
-#warning TODO - unit tests
-        private readonly  List<IHealthProvider> _providers=new List<IHealthProvider>(50);
+        private readonly List<IHealthProvider> _providers = new List<IHealthProvider>(50);
 
         public void Register(IHealthProvider healthProvider)
         {
@@ -15,7 +14,6 @@ namespace RandomSimulationEngine.Health
 
         public HealthStatus GetHealthStatus()
         {
-#warning TEST
             bool[] aliveStatuses = _providers.Select(p => p.IsAlive).ToArray();
 
             int aliveCount = aliveStatuses.Count(p => p);

@@ -9,7 +9,6 @@ namespace RandomSimulationEngine.Configuration
     /// </summary>
     public class RandomSimulationConfiguration
     {
-#warning TODO - unit tests
         public ThrottlingConfiguration Throttling { get; }
 
         public ImageDownloadConfiguration ImageDownload { get; }

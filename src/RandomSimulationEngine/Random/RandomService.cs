@@ -5,8 +5,7 @@ namespace RandomSimulationEngine.Random
 {
     public class RandomService : IRandomService
     {
-#warning TODO - unit tests
-        private static readonly TimeSpan _seedMinimumLifeTime = TimeSpan.FromSeconds(5);
+        public static TimeSpan SeedMinimumLifeTime { get; } = TimeSpan.FromSeconds(5);
         private System.DateTime _seedBirth = System.DateTime.MinValue; // initial seed is always to be replaced
 
         private System.Random _random = new System.Random();
@@ -41,7 +40,7 @@ namespace RandomSimulationEngine.Random
 
         private bool SeedCanBeReplaced()
         {
-            return _seedBirth + _seedMinimumLifeTime < _dateTimeService.UtcNow;
+            return _seedBirth + SeedMinimumLifeTime < _dateTimeService.UtcNow;
         }
 
         public int Next()

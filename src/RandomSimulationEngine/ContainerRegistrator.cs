@@ -15,7 +15,6 @@ namespace RandomSimulationEngine
 {
     public static class ContainerRegistrator
     {
-#warning TODO - unit tests
         private static readonly ILog _log = LogManager.GetLogger(typeof(ContainerRegistrator));
 
         public static Container Register()

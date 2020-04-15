@@ -13,12 +13,6 @@ namespace RandomSimulationEngine.Rest
     /// </summary>
     public class RandomSimulationController : Controller, IRandomSimulationController
     {
-#warning TODO - unit tests
-        /// <summary>
-        /// Accept header name.
-        /// </summary>
-        public const string ACCEPT = "Accept";
-
         /// <summary>
         /// text/plain content type.
         /// </summary>

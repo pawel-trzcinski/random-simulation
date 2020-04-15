@@ -1,13 +1,15 @@
 ﻿using System;
+using JetBrains.Annotations;
 
 namespace RandomSimulationEngine.ValueCalculator
 {
     public class ValueCalculator : IValueCalculator
     {
-#warning TODO - unit tests
-        public double GetDouble(byte[] bytes)
+        private static readonly double _originalMin = Convert.ToDouble(Int32.MinValue);
+        private static readonly double _originalRange = Convert.ToDouble(Int32.MaxValue) - Convert.ToDouble(Int32.MinValue);
+
+        public double GetDouble([NotNull] byte[] bytes)
         {
-#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -15,15 +17,14 @@ namespace RandomSimulationEngine.ValueCalculator
 
             if (bytes.Length != 8)
             {
-                throw new ArgumentException("bytes.Length should equal to 8", nameof(bytes));
+                throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 8", nameof(bytes));
             }
 
             return BitConverter.ToDouble(bytes, 0);
         }
 
-        public int GetInt32(byte[] bytes)
+        public int GetInt32([NotNull] byte[] bytes)
         {
-#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -31,15 +32,14 @@ namespace RandomSimulationEngine.ValueCalculator
 
             if (bytes.Length != 4)
             {
-                throw new ArgumentException("bytes.Length should equal to 4", nameof(bytes));
+                throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 4", nameof(bytes));
             }
 
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        public int GetInt32(byte[] bytes, int max)
+        public int GetInt32([NotNull] byte[] bytes, int max)
         {
-#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -47,15 +47,19 @@ namespace RandomSimulationEngine.ValueCalculator
 
             if (bytes.Length != 4)
             {
-                throw new ArgumentException("bytes.Length should equal to 4", nameof(bytes));
+                throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 4", nameof(bytes));
+            }
+
+            if (max <= 0)
+            {
+                throw new ArgumentException($"{nameof(max)} must be a positive number", nameof(max));
             }
 
             return Normalize(BitConverter.ToInt32(bytes, 0), 0, max);
         }
 
-        public int GetInt32(byte[] bytes, int min, int max)
+        public int GetInt32([NotNull] byte[] bytes, int min, int max)
         {
-#warning TEST
             if (bytes == null)
             {
                 throw new ArgumentNullException(nameof(bytes));
@@ -63,7 +67,7 @@ namespace RandomSimulationEngine.ValueCalculator
 
             if (bytes.Length != 4)
             {
-                throw new ArgumentException("bytes.Length should equal to 4", nameof(bytes));
+                throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 4", nameof(bytes));
             }
 
             return Normalize(BitConverter.ToInt32(bytes, 0), min, max);
@@ -71,21 +75,23 @@ namespace RandomSimulationEngine.ValueCalculator
 
         private static int Normalize(int value, int min, int max)
         {
-#warning TEST
             if (max <= min)
             {
                 throw new ArgumentException($"{nameof(max)} has to be grater than {nameof(min)}", nameof(max));
             }
 
-            double originalRange = Convert.ToDouble(Int32.MaxValue) - Convert.ToDouble(Int32.MinValue);
-            double newRange = Convert.ToDouble(min) - Convert.ToDouble(max);
+            // I'm lazy
+            // https://stackoverflow.com/questions/5294955/how-to-scale-down-a-range-of-numbers-with-a-known-min-and-max-value
+            //      (b - a)(x - min)
+            //f(x) = --------------+a
+            //       max - min
+
+            double newMin = Convert.ToDouble(min);
+            double newRange = Convert.ToDouble(max) - newMin;
 
             double originalInt = Convert.ToDouble(value);
 
-            // newInt/originalInt = newRange/originalRange
-            // newInt = newRange * OriginalInt/OriginalRange
-
-            return Convert.ToInt32(newRange * originalInt / originalRange);
+            return Convert.ToInt32(newRange * (originalInt - _originalMin) / _originalRange + newMin);
         }
     }
 }
