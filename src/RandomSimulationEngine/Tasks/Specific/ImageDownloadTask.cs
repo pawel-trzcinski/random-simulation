@@ -29,6 +29,7 @@ namespace RandomSimulationEngine.Tasks.Specific
         private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
 
         private volatile bool _isDataAvailable;
+#warning TODO - unit test, że jak !IsDataAvailable, to GetBytes zwraca nic
         public bool IsDataAvailable => _isDataAvailable;
 
         private volatile bool _isRunning;

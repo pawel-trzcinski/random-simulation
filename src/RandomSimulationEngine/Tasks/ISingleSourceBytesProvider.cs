@@ -2,7 +2,6 @@
 {
     public interface ISingleSourceBytesProvider
     {
-#warning TODO - unit test, że jak !IsDataAvailable, to GetBytes zwraca nic
         bool IsDataAvailable { get; }
 
         /// <summary>

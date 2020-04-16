@@ -17,26 +17,19 @@ namespace RandomSimulation
         private static IEngine _engine;
 
 #warning TODO - dodac wszedize logowanie jakieś sensowne
-
-#warning TODO - docker
-
 #warning TODO - rotacja logów dockera na hoście: https: //stackoverflow.com/questions/42510002/how-to-clear-the-logs-properly-for-a-docker-container
 
+#warning TODO - docker
+#warning TODO - zrobic automatycznego, długo działającego testera, któy sprawdzi randomowość w długim czasie i przy dużym obciążeniu
+
 #warning TODO - spłodzić Readme.md
+
+#warning TODO - zobaczyć, czy nie ma jakiś darmowych serwerów, gdzie przez vpn mozna zasysać dane z internetu ( możnaby za każym razem losować z którego isę łączymy i gdzie )
 
         [MTAThread]
         public static void Main()
         {
             _log.Info("Starting RandomSimulation");
-
-            // zobaczyć, czy nie ma jakiś darmowych serwerów, gdzie przez vpn mozna zasysać dane z internetu
-            //    możnaby za każym razem losować z którego isę łączymy i gdzie
-
-            // zrobic automatycznego, długo działającego testera, któy sprawdzi randomowość w długim czasie i przy dużym obciążeniu
-
-            // logi debugowe, info itp
-            // komentarze
-            // docker
 
             try
             {
@@ -46,10 +39,7 @@ namespace RandomSimulation
                 _log.Info("Initializing injection container");
                 _engine = ContainerRegistrator.Register().GetInstance<IEngine>();
 
-                _mainTask = Task.Factory.StartNew(() =>
-                {
-                    _engine.Start();
-                });
+                _mainTask = Task.Run(_engine.Start);
 
                 Console.CancelKeyPress += OnExit;
                 _closing.WaitOne();

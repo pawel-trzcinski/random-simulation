@@ -75,7 +75,7 @@ namespace RandomSimulationEngine
             _log.Info($"Creating tasks of count {_configurationReader.Configuration.ImageDownload.FrameGrabUrls.Count}");
 #warning DEBUG !!!!!
             foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls.Take(1))
-            //foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls)
+                //foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls)
             {
                 ISourceTask sourceTask = _imageDownloadTaskFactory.GetNewTask(url);
 
@@ -90,7 +90,7 @@ namespace RandomSimulationEngine
         /// <summary>
         /// Start REST service hosting.
         /// </summary>
-        private void StartHosting()
+        protected virtual void StartHosting()
         {
             ThrottlingConfiguration throttling = _configurationReader.Configuration.Throttling;
 
@@ -108,10 +108,7 @@ namespace RandomSimulationEngine
                     services.AddLogging();
                     services.AddMvc();
 
-                    services.AddSwaggerGen(c =>
-                    {
-                        c.SwaggerDoc("random-simulation", new OpenApiInfo { Title = "Random Simulation", Version = "v1" });
-                    });
+                    services.AddSwaggerGen(c => { c.SwaggerDoc("random-simulation", new OpenApiInfo {Title = "Random Simulation", Version = "v1"}); });
                 })
                 .Configure(app =>
                 {
@@ -119,22 +116,21 @@ namespace RandomSimulationEngine
                     app.UseMvc();
                     app.UseSwagger();
 
-                    app.UseSwaggerUI(c =>
-                    {
-                        c.SwaggerEndpoint("/swagger/random-simulation/swagger.json", "Random Simulation");
-                    });
+                    app.UseSwaggerUI(c => { c.SwaggerEndpoint("/swagger/random-simulation/swagger.json", "Random Simulation"); });
                 })
                 .Build();
+
             _webHost.Run();
         }
 
         /// <summary>
         /// Stops REST service hosting.
         /// </summary>
-        private void StopHosting()
+        protected virtual void StopHosting()
         {
             _log.Info("Hosting stopping");
             _webHost.StopAsync().Wait();
+            _log.Info("Hosting stopped");
         }
 
         private void StopDataAcquisition()
