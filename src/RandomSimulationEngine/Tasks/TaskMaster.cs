@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading;
 using System.Threading.Tasks;
 using log4net;
@@ -11,43 +12,42 @@ namespace RandomSimulationEngine.Tasks
     public class TaskMaster : ITaskMaster
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(TaskMaster));
-#warning TODO - unit tests
 
         private readonly IDateTimeService _dateTimeService;
 
-        private readonly LinkedList<IPokableTask> _tasks = new LinkedList<IPokableTask>();
+        protected readonly LinkedList<IPokableTask> _tasks = new LinkedList<IPokableTask>();
         private readonly object _lockObject = new object();
 
         private readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(1);
         private readonly TimeSpan _checkAfterPokeInterval = TimeSpan.FromSeconds(2);
         private readonly TimeSpan _errorInterval = TimeSpan.FromSeconds(10);
 
-        private System.DateTime _lastExecutionTime = System.DateTime.UtcNow;
+        private System.DateTime _lastExecutionTime;
         private readonly TimeSpan _idleTimeAllowed;
 
         public TaskMaster(IConfigurationReader configurationReader, IDateTimeService dateTimeService)
         {
             this._idleTimeAllowed = configurationReader.Configuration.Tasks.IdleTimeAllowed;
             this._dateTimeService = dateTimeService;
+
+            _lastExecutionTime = dateTimeService.UtcNow;
         }
 
         public void Register(IPokableTask pokableTask)
         {
+            pokableTask.ExecutionFinished += PokableTaskOnExecutionFinished;
             lock (_lockObject)
             {
-                pokableTask.ExecutionFinished += PokableTaskOnExecutionFinished;
-                _tasks.AddFirst(pokableTask);
+                _tasks.AddLast(pokableTask);
             }
         }
 
         private void PokableTaskOnExecutionFinished(object sender, EventArgs e)
         {
-#warning TEST
             try
             {
                 if (sender is IPokableTask pokableTask)
                 {
-#warning CHECK - jakiś deadlock? - INFINITE LOCK!!! crap - trzeba może lepiej przeprojektować tą klasę ( w szczególności synchronizację i struktury danych)
                     lock (_lockObject)
                     {
                         if (!_tasks.Remove(pokableTask))
@@ -56,8 +56,9 @@ namespace RandomSimulationEngine.Tasks
                         }
 
                         _tasks.AddFirst(pokableTask);
-                        _lastExecutionTime = _dateTimeService.UtcNow;
                     }
+
+                    _lastExecutionTime = _dateTimeService.UtcNow;
                 }
             }
             catch (Exception ex)
@@ -68,15 +69,18 @@ namespace RandomSimulationEngine.Tasks
 
         public void StartTasks(CancellationToken cancellationToken)
         {
+            IPokableTask[] pokableTasks;
             lock (_lockObject)
             {
-                foreach (IPokableTask task in _tasks)
-                {
-                    task.Start(cancellationToken);
-                }
-
-                _lastExecutionTime = _dateTimeService.UtcNow;
+                pokableTasks = _tasks.ToArray();
             }
+
+            foreach (IPokableTask task in pokableTasks)
+            {
+                task.Start(cancellationToken);
+            }
+
+            _lastExecutionTime = _dateTimeService.UtcNow;
 
             Task.Run(() => PokerRoutine(cancellationToken), cancellationToken);
         }
@@ -95,28 +99,28 @@ namespace RandomSimulationEngine.Tasks
                     TimeSpan checkInterval = _checkInterval;
                     try
                     {
+                        LinkedListNode<IPokableTask> current;
                         lock (_lockObject)
                         {
-                            TimeSpan timeFromLastExecution = _dateTimeService.UtcNow - _lastExecutionTime;
+                            // idle time exceeded; find last non-running
+                            current = _tasks.Last;
+                        }
 
-                            if (timeFromLastExecution > _idleTimeAllowed)
+                        TimeSpan timeFromLastExecution = _dateTimeService.UtcNow - _lastExecutionTime;
+
+                        if (timeFromLastExecution > _idleTimeAllowed)
+                        {
+                            while (current != null)
                             {
-                                // idle time exeeded; find last non-running
-                                LinkedListNode<IPokableTask> current = _tasks.Last;
-
-                                while (current != null)
+                                if (!current.Value.IsRunning)
                                 {
-                                    if (!current.Value.IsRunning)
-                                    {
-                                        // this is the task that does not run the longest
-                                        current.Value.Poke();
-                                        checkInterval = _checkAfterPokeInterval; // wait a little bit longer after poking
-                                    }
-                                    else
-                                    {
-                                        current = current.Previous;
-                                    }
+                                    // this is the task that does not run the longest
+                                    current.Value.Poke();
+                                    checkInterval = _checkAfterPokeInterval; // wait a little bit longer after poking
+                                    break;
                                 }
+
+                                current = current.Previous;
                             }
                         }
                     }

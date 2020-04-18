@@ -1,5 +1,4 @@
-﻿using System.Linq;
-using System.Threading;
+﻿using System.Threading;
 using RandomSimulationEngine.Configuration;
 using log4net;
 using Microsoft.AspNetCore;
@@ -73,9 +72,9 @@ namespace RandomSimulationEngine
         private void StartDataAcquisition()
         {
             _log.Info($"Creating tasks of count {_configurationReader.Configuration.ImageDownload.FrameGrabUrls.Count}");
-#warning DEBUG !!!!!
-            foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls.Take(1))
-                //foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls)
+          
+            //foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls.Take(1))
+            foreach (string url in _configurationReader.Configuration.ImageDownload.FrameGrabUrls)
             {
                 ISourceTask sourceTask = _imageDownloadTaskFactory.GetNewTask(url);
 

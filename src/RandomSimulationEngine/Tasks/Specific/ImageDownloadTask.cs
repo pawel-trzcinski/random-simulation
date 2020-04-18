@@ -27,10 +27,10 @@ namespace RandomSimulationEngine.Tasks.Specific
         private readonly string _url;
 
         private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
+        private readonly object _executionLockObject = new object();
 
-        private volatile bool _isDataAvailable;
 #warning TODO - unit test, że jak !IsDataAvailable, to GetBytes zwraca nic
-        public bool IsDataAvailable => _isDataAvailable;
+        public bool IsDataAvailable => _queue != null && _queue.Count > 0;
 
         private volatile bool _isRunning;
         public bool IsRunning => _isRunning;
@@ -77,50 +77,52 @@ namespace RandomSimulationEngine.Tasks.Specific
                     }
 
                     TimeSpan currentInterval = originalInterval;
-                    try
+                    lock (_executionLockObject)
                     {
-                        _isRunning = true;
-                        _isDataAvailable = false;
-                        byte[] bytes = _webClientWrapper.GetImageBytes(_url, cancellationToken);
-                        if (bytes.Length == 0)
+                        try
                         {
-                            throw new InvalidOperationException($"Not enoug bytes received ({bytes.Length})");
-                        }
+                            _isRunning = true;
+                            byte[] bytes = _webClientWrapper.GetImageBytes(_url, cancellationToken);
+                            if (bytes.Length == 0)
+                            {
+                                throw new InvalidOperationException($"Not enoug bytes received ({bytes.Length})");
+                            }
 
-                        if (cancellationToken.IsCancellationRequested)
+                            if (cancellationToken.IsCancellationRequested)
+                            {
+                                return;
+                            }
+
+                            byte[] noise = GetNoise(bytes);
+
+                            // remove previous bytes from memory
+                            for (int i = 0; i < _previousImage.Length; i++)
+                            {
+                                _previousImage[i] = 0;
+                            }
+
+                            _previousImage = bytes;
+
+                            ConsumeBytes(new ReadOnlySpan<byte>(noise));
+
+                            // After every download, set random seed. Random service will protect itself from frequency overflow
+                            if (_queue.TryFetch(4, out byte[] randomSeed))
+                            {
+                                _randomService.SetSeed(BitConverter.ToInt32(randomSeed, 0));
+                            }
+
+                            // remove noise from memory
+                            for (int i = 0; i < noise.Length; i++)
+                            {
+                                noise[i] = 0;
+                            }
+                        }
+                        catch (Exception ex)
                         {
-                            return;
+                            _log.Error(ex);
+
+                            currentInterval += originalInterval;
                         }
-
-                        byte[] noise = GetNoise(bytes);
-                        
-                        // remove previous bytes from memory
-                        for (int i = 0; i < _previousImage.Length; i++)
-                        {
-                            _previousImage[i] = 0;
-                        }
-
-                        _previousImage = bytes;
-
-                        ConsumeBytes(new ReadOnlySpan<byte>(noise));
-
-                        // After every download, set random seed. Random service will protect itself from frequency overflow
-                        if (_queue.TryFetch(4, out byte[] randomSeed))
-                        {
-                            _randomService.SetSeed(BitConverter.ToInt32(randomSeed, 0));
-                        }
-
-                        // remove noise from memory
-                        for (int i = 0; i < noise.Length; i++)
-                        {
-                            noise[i] = 0;
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        _log.Error(ex);
-
-                        currentInterval += originalInterval;
                     }
 
                     _isRunning = false;
@@ -139,7 +141,7 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         private byte[] GetNoise([NotNull] byte[] currentImage)
         {
-            int resultCount = Math.Min(currentImage.Length, (_previousImage?? new byte[0]).Length);
+            int resultCount = Math.Min(currentImage.Length, (_previousImage ?? new byte[0]).Length);
 
             if (_previousImage == null)
             {
@@ -176,35 +178,25 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         private void ConsumeBytes(ReadOnlySpan<byte> bytes)
         {
-            try
+            int oneImageHashCount = _configurationReader.Configuration.ImageDownload.OneImageHashCount;
+
+            // check if it is possible to get number of hashes we want
+            int singleHashSourceLength = bytes.Length / oneImageHashCount;
+            if (singleHashSourceLength < MINIMUM_NUMBER_OF_BYTES_TO_HASH)
             {
-                int oneImageHashCount = _configurationReader.Configuration.ImageDownload.OneImageHashCount;
-
-                // check if it is possible to get number of hashes we want
-                int singleHashSourceLength = bytes.Length / oneImageHashCount;
-                if (singleHashSourceLength < MINIMUM_NUMBER_OF_BYTES_TO_HASH)
-                {
-                    oneImageHashCount = bytes.Length / MINIMUM_NUMBER_OF_BYTES_TO_HASH;
-                    singleHashSourceLength = MINIMUM_NUMBER_OF_BYTES_TO_HASH;
-                }
-
-                _log.Debug($"singleHashSourceLength: {singleHashSourceLength}");
-                _log.Debug($"oneImageHashCount: {oneImageHashCount}");
-
-                for (int i = 0; i < oneImageHashCount; i++)
-                {
-                    ConsumeBytesForOneHash(bytes.Slice(i * singleHashSourceLength, singleHashSourceLength));
-                }
+                oneImageHashCount = bytes.Length / MINIMUM_NUMBER_OF_BYTES_TO_HASH;
+                singleHashSourceLength = MINIMUM_NUMBER_OF_BYTES_TO_HASH;
             }
-            finally
+
+            _log.Debug($"singleHashSourceLength: {singleHashSourceLength}");
+            _log.Debug($"oneImageHashCount: {oneImageHashCount}");
+
+            for (int i = 0; i < oneImageHashCount; i++)
             {
-                if (_queue.Count > 0)
-                {
-                    _isDataAvailable = true;
-                }
+                ConsumeBytesForOneHash(bytes.Slice(i * singleHashSourceLength, singleHashSourceLength));
             }
         }
-        
+
         private void ConsumeBytesForOneHash(ReadOnlySpan<byte> span)
         {
             byte[] hash;
@@ -230,7 +222,6 @@ namespace RandomSimulationEngine.Tasks.Specific
         [CanBeNull]
         public byte[] GetBytes(int count)
         {
-#warning TEST
             int queueCount = _queue.Count;
             if (queueCount < count)
             {
@@ -238,7 +229,7 @@ namespace RandomSimulationEngine.Tasks.Specific
                 return null;
             }
 
-            return!_queue.TryFetch(count, out byte[] result) ? result : null;
+            return _queue.TryFetch(count, out byte[] result) ? result : null;
         }
     }
 }
