@@ -20,9 +20,9 @@ namespace RandomSimulation.Tests.Configuration
             return new ImageDownloadConfiguration(frameGrabUrls, downloadIntervalS, oneImageHashCount, taskBytesCacheCapacity);
         }
 
-        public static ImageDownloadConfiguration CreateCorrectConfiguration(string[] urlsOverload = null)
+        public static ImageDownloadConfiguration CreateCorrectConfiguration(string[] urlsOverload = null, int downloadIntervalOverride = 90)
         {
-            return CreateConfiguration(urlsOverload ?? _urls);
+            return CreateConfiguration(urlsOverload ?? _urls, downloadIntervalOverride);
         }
 
         [Test]

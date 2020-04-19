@@ -17,7 +17,6 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         private const int MINIMUM_NUMBER_OF_BYTES_TO_HASH = 32;
 
-#warning TODO - unit tests
         private readonly IWebClientWrapper _webClientWrapper;
         private readonly IRandomService _randomService;
         private readonly IConfigurationReader _configurationReader;
@@ -29,7 +28,6 @@ namespace RandomSimulationEngine.Tasks.Specific
         private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
         private readonly object _executionLockObject = new object();
 
-#warning TODO - unit test, że jak !IsDataAvailable, to GetBytes zwraca nic
         public bool IsDataAvailable => _queue != null && _queue.Count > 0;
 
         private volatile bool _isRunning;
