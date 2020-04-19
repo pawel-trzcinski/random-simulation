@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Linq;
 using JetBrains.Annotations;
+using log4net;
 using Newtonsoft.Json;
 
 namespace RandomSimulationEngine.Configuration.ImageDownload
@@ -10,6 +11,8 @@ namespace RandomSimulationEngine.Configuration.ImageDownload
     [JsonObject(nameof(RandomSimulationConfiguration.ImageDownload))]
     public class ImageDownloadConfiguration
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(ImageDownloadConfiguration));
+
         public static readonly TimeSpan MinimumDownloadInterval = TimeSpan.FromSeconds(2);
 
         /// <summary>
@@ -40,6 +43,8 @@ namespace RandomSimulationEngine.Configuration.ImageDownload
 
         public void ValidateConfiguration()
         {
+            _log.Debug($"Validating {nameof(ImageDownloadConfiguration)}");
+
             if (this.FrameGrabUrls.Count <= 0)
             {
                 throw new ArgumentException($"No {nameof(FrameGrabUrls)} defined", nameof(FrameGrabUrls));
@@ -59,6 +64,8 @@ namespace RandomSimulationEngine.Configuration.ImageDownload
             {
                 throw new ArgumentOutOfRangeException(nameof(TaskBytesCacheCapacity), $"{nameof(TaskBytesCacheCapacity)} must be a positive number");
             }
+
+            _log.Info($"{nameof(ImageDownloadConfiguration)} valid");
         }
     }
 }

@@ -38,7 +38,7 @@ namespace RandomSimulationEngine.Rest
             Scope scope = ThreadScopedLifestyle.BeginScope(_container);
 
             _log.Debug("Seting Scope feature");
-            context.HttpContext.Features.Set<Scope>(scope);
+            context.HttpContext.Features.Set(scope);
 
             _log.Debug("Getting controller from incection container");
             return scope.GetInstance<IRandomSimulationController>();

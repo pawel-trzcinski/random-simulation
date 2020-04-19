@@ -114,6 +114,8 @@ namespace RandomSimulationEngine.Tasks
                             {
                                 if (!current.Value.IsRunning)
                                 {
+                                    _log.Debug("Poking");
+
                                     // this is the task that does not run the longest
                                     current.Value.Poke();
                                     checkInterval = _checkAfterPokeInterval; // wait a little bit longer after poking

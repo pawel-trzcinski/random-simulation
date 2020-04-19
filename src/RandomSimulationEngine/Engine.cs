@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using RandomSimulationEngine.Factories.ImageDownload;
 using RandomSimulationEngine.Health;
 using RandomSimulationEngine.RandomBytesPuller;
+using RandomSimulationEngine.Rest.Throttling;
 using RandomSimulationEngine.Rest.Throttling.Middlewares;
 using RandomSimulationEngine.Tasks;
 
@@ -91,7 +92,7 @@ namespace RandomSimulationEngine
         /// </summary>
         protected virtual void StartHosting()
         {
-            ThrottlingConfiguration throttling = _configurationReader.Configuration.Throttling;
+            IThrottlingOptions throttling = _configurationReader.Configuration.Throttling;
 
             _webHost = WebHost.CreateDefaultBuilder(null)
                 .UseKestrel(options =>

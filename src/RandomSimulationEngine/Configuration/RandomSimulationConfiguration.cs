@@ -1,6 +1,8 @@
 ﻿using System;
+using log4net;
 using Newtonsoft.Json;
 using RandomSimulationEngine.Configuration.ImageDownload;
+using RandomSimulationEngine.Rest.Throttling;
 
 namespace RandomSimulationEngine.Configuration
 {
@@ -9,7 +11,9 @@ namespace RandomSimulationEngine.Configuration
     /// </summary>
     public class RandomSimulationConfiguration
     {
-        public ThrottlingConfiguration Throttling { get; }
+        private static readonly ILog _log = LogManager.GetLogger(typeof(RandomSimulationConfiguration));
+
+        public IThrottlingOptions Throttling { get; }
 
         public ImageDownloadConfiguration ImageDownload { get; }
 
@@ -30,6 +34,8 @@ namespace RandomSimulationEngine.Configuration
 
         private void ValidateConfiguration()
         {
+            _log.Debug($"Validating {nameof(RandomSimulationConfiguration)}");
+
             if (Throttling == null)
             {
                 throw new ArgumentNullException(nameof(Throttling));
@@ -44,6 +50,8 @@ namespace RandomSimulationEngine.Configuration
             {
                 throw new ArgumentNullException(nameof(Tasks));
             }
+
+            _log.Info($"{nameof(RandomSimulationConfiguration)} valid");
         }
     }
 }

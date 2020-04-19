@@ -2,7 +2,7 @@
 
 namespace RandomSimulationEngine.Factories
 {
-    public interface ISourceFactory<T>
+    public interface ISourceFactory<in T>
     {
         ISourceTask GetNewTask(T configuration);
     }

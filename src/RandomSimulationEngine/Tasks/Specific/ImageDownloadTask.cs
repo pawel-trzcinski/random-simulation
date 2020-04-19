@@ -80,6 +80,7 @@ namespace RandomSimulationEngine.Tasks.Specific
                         try
                         {
                             _isRunning = true;
+                            _log.Debug($"Downloading from {_url}");
                             byte[] bytes = _webClientWrapper.GetImageBytes(_url, cancellationToken);
                             if (bytes.Length == 0)
                             {
@@ -214,6 +215,7 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         public void Poke()
         {
+            _log.Debug($"Task poked - {_url}");
             _resetEvent.Set();
         }
 

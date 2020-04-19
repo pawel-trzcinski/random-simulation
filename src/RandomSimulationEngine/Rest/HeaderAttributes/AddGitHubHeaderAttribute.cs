@@ -8,12 +8,12 @@
         /// <summary>
         /// GitHub header name.
         /// </summary>
-        public const string GIT_HUB = "GitHub";
+        private const string GIT_HUB = "GitHub";
 
         /// <summary>
         /// GitHub header value.
         /// </summary>
-        public const string GIT_HUB_ADDRESS = "https://github.com/pawel-trzcinski/random-simulation";
+        private const string GIT_HUB_ADDRESS = "https://github.com/pawel-trzcinski/random-simulation";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddGitHubHeaderAttribute"/> class.

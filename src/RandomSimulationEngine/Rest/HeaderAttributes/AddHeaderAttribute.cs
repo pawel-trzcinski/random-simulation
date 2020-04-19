@@ -8,8 +8,8 @@ namespace RandomSimulationEngine.Rest.HeaderAttributes
     /// </summary>
     public abstract class AddHeaderAttribute : ResultFilterAttribute
     {
-        private readonly string name;
-        private readonly string value;
+        private readonly string _name;
+        private readonly string _value;
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddHeaderAttribute"/> class.
@@ -18,8 +18,8 @@ namespace RandomSimulationEngine.Rest.HeaderAttributes
         /// <param name="value">Header value.</param>
         protected AddHeaderAttribute(string name, string value)
         {
-            this.name = name;
-            this.value = value;
+            this._name = name;
+            this._value = value;
         }
 
         /// <inheritdoc/>
@@ -30,7 +30,7 @@ namespace RandomSimulationEngine.Rest.HeaderAttributes
                 throw new ArgumentNullException(nameof(context));
             }
 
-            context.HttpContext.Response.Headers.Add(name, new string[] { value });
+            context.HttpContext.Response.Headers.Add(_name, new[] {_value});
             base.OnResultExecuting(context);
         }
     }

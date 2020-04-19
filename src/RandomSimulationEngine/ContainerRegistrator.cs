@@ -19,6 +19,8 @@ namespace RandomSimulationEngine
 
         public static Container Register()
         {
+            _log.Info("Registering container");
+
             Container container = new Container();
 
             container.Options.DefaultScopedLifestyle = ScopedLifestyle.Flowing;

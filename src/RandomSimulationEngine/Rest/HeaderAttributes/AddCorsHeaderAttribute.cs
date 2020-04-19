@@ -8,7 +8,7 @@
         /// <summary>
         /// Name of CORS header.
         /// </summary>
-        public const string ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
+        private const string ACCESS_CONTROL_ALLOW_ORIGIN = "Access-Control-Allow-Origin";
 
         /// <summary>
         /// Initializes a new instance of the <see cref="AddCorsHeaderAttribute"/> class.

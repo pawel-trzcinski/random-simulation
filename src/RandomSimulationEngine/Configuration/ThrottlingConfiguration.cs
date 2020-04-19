@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using System;
+using log4net;
 using RandomSimulationEngine.Rest.Throttling;
 
 namespace RandomSimulationEngine.Configuration
@@ -7,6 +8,8 @@ namespace RandomSimulationEngine.Configuration
     [JsonObject(nameof(RandomSimulationConfiguration.Throttling))]
     public class ThrottlingConfiguration : IThrottlingOptions
     {
+        private static readonly ILog _log = LogManager.GetLogger(typeof(ThrottlingConfiguration));
+
         public int ConcurrentRequestsLimit { get; }
         public int QueueLimit { get; }
         public TimeSpan QueueTimeout { get; }
@@ -25,6 +28,8 @@ namespace RandomSimulationEngine.Configuration
 
         private void ValidateConfiguration()
         {
+            _log.Debug($"Validating {nameof(ThrottlingConfiguration)}");
+
             if (ConcurrentRequestsLimit < 1)
             {
                 throw new ArgumentOutOfRangeException(nameof(ConcurrentRequestsLimit), $"{nameof(ConcurrentRequestsLimit)} has to be greater than 0");
@@ -49,6 +54,8 @@ namespace RandomSimulationEngine.Configuration
             {
                 throw new ArgumentOutOfRangeException(nameof(MaximumServerConnections), $"{nameof(MaximumServerConnections)} has to be greater or equal to the sum of {nameof(ConcurrentRequestsLimit)} and {nameof(QueueLimit)}");
             }
+
+            _log.Info($"{nameof(ThrottlingConfiguration)} valid");
         }
     }
 }
