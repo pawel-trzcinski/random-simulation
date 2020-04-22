@@ -16,8 +16,6 @@ namespace RandomSimulation
         private static Task _mainTask;
         private static IEngine _engine;
 
-#warning TODO - wrzucić na server
-
         [MTAThread]
         public static void Main()
         {
