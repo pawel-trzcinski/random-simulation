@@ -40,7 +40,8 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
             (
                 ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                 ImageDownloadConfigurationTests.CreateCorrectConfiguration(downloadIntervalOverride: 2),
-                TasksConfigurationTests.CreateCorrectConfiguration()
+                TasksConfigurationTests.CreateCorrectConfiguration(),
+                HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
             Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();

@@ -73,7 +73,8 @@ namespace RandomSimulation.Tests
             (
                 ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                 ImageDownloadConfigurationTests.CreateCorrectConfiguration(new[] {url1, url2, url3}),
-                TasksConfigurationTests.CreateCorrectConfiguration()
+                TasksConfigurationTests.CreateCorrectConfiguration(),
+                HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
             Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();

@@ -16,7 +16,8 @@ namespace RandomSimulation.Tests.Configuration
                 (
                     ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                     ImageDownloadConfigurationTests.CreateCorrectConfiguration(),
-                    TasksConfigurationTests.CreateCorrectConfiguration()
+                    TasksConfigurationTests.CreateCorrectConfiguration(),
+                    HistoryConfigurationTests.CreateCorrectConfiguration()
                 );
             });
         }
@@ -30,7 +31,8 @@ namespace RandomSimulation.Tests.Configuration
                 (
                     null,
                     ImageDownloadConfigurationTests.CreateCorrectConfiguration(),
-                    TasksConfigurationTests.CreateCorrectConfiguration()
+                    TasksConfigurationTests.CreateCorrectConfiguration(),
+                    HistoryConfigurationTests.CreateCorrectConfiguration()
                 );
             });
         }
@@ -44,7 +46,8 @@ namespace RandomSimulation.Tests.Configuration
                 (
                     ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                     null,
-                    TasksConfigurationTests.CreateCorrectConfiguration()
+                    TasksConfigurationTests.CreateCorrectConfiguration(),
+                    HistoryConfigurationTests.CreateCorrectConfiguration()
                 );
             });
         }
@@ -58,6 +61,22 @@ namespace RandomSimulation.Tests.Configuration
                 (
                     ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                     ImageDownloadConfigurationTests.CreateCorrectConfiguration(),
+                    null,
+                    HistoryConfigurationTests.CreateCorrectConfiguration()
+                );
+            });
+        }
+
+        [Test]
+        public void Validation_JistorysConfigurationNull()
+        {
+            Assert.Throws<ArgumentNullException>(() =>
+            {
+                var unused = new RandomSimulationConfiguration
+                (
+                    ThrottlingConfigurationTests.CreateCorrectConfiguration(),
+                    ImageDownloadConfigurationTests.CreateCorrectConfiguration(),
+                    TasksConfigurationTests.CreateCorrectConfiguration(),
                     null
                 );
             });

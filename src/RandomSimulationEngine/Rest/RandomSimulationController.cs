@@ -4,6 +4,7 @@ using RandomSimulationEngine.ValueCalculator;
 using System.Globalization;
 using System;
 using RandomSimulationEngine.Health;
+using RandomSimulationEngine.History;
 using RandomSimulationEngine.RandomBytesPuller;
 
 namespace RandomSimulationEngine.Rest
@@ -23,12 +24,14 @@ namespace RandomSimulationEngine.Rest
         private readonly IValueCalculator _valueCalculator;
         private readonly IRandomBytesPuller _randomBytesPuller;
         private readonly IHealthChecker _healthChecker;
+        private readonly IHistoryStorage _historyStorage;
 
-        public RandomSimulationController(IValueCalculator valueCalculator, IRandomBytesPuller randomBytesPuller, IHealthChecker healthChecker)
+        public RandomSimulationController(IValueCalculator valueCalculator, IRandomBytesPuller randomBytesPuller, IHealthChecker healthChecker, IHistoryStorage historyStorage)
         {
             this._valueCalculator = valueCalculator;
             this._randomBytesPuller = randomBytesPuller;
             this._healthChecker = healthChecker;
+            this._historyStorage = historyStorage;
         }
 
         /// <summary>
@@ -46,7 +49,9 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult Next()
         {
-            return Content(this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4)).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
+            int result = this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4));
+            _historyStorage.StoreNext(result);
+            return Content(result.ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next/{max}")]
@@ -54,7 +59,9 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult Next([FromRoute] int max)
         {
-            return Content(this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4), max).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
+            int result = this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4), max);
+            _historyStorage.StoreNextMax(result);
+            return Content(result.ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next/{min}/{max}")]
@@ -62,7 +69,9 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult Next([FromRoute]int min, [FromRoute]int max)
         {
-            return Content(this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4), min, max).ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
+            int result = this._valueCalculator.GetInt32(this._randomBytesPuller.Pull(4), min, max);
+            _historyStorage.StoreNextMinMax(result);
+            return Content(result.ToString(CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next-double")]
@@ -70,7 +79,9 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult NextDouble()
         {
-            return Content(this._valueCalculator.GetDouble(this._randomBytesPuller.Pull(8)).ToString("G17", CultureInfo.InvariantCulture), TEXT_PLAIN);
+            double result = this._valueCalculator.GetDouble(this._randomBytesPuller.Pull(8));
+            _historyStorage.StoreNextDouble(result);
+            return Content(result.ToString("G17", CultureInfo.InvariantCulture), TEXT_PLAIN);
         }
 
         [HttpGet("next-bytes/{count:range(1,50)}")]
@@ -78,7 +89,17 @@ namespace RandomSimulationEngine.Rest
         [AddGitHubHeader]
         public ContentResult NextBytes([FromRoute]int count)
         {
-            return Content(Convert.ToBase64String(this._randomBytesPuller.Pull(count)), TEXT_PLAIN);
+            byte[] result = this._randomBytesPuller.Pull(count);
+            _historyStorage.StoreNextBytes(result);
+            return Content(Convert.ToBase64String(result), TEXT_PLAIN);
+        }
+
+        [HttpGet("histogram/{ranges:range(5,200)}")]
+        [AddCorsHeader]
+        [AddGitHubHeader]
+        public ContentResult Histogram(int ranges)
+        {
+            return Content(_historyStorage.GetHistogramReport(ranges), TEXT_PLAIN);
         }
 
         [HttpGet("health")]

@@ -16,7 +16,7 @@ namespace RandomSimulation
         private static Task _mainTask;
         private static IEngine _engine;
 
-#warning TODO - zrobic automatycznego, długo działającego testera, któy sprawdzi randomowość w długim czasie i przy dużym obciążeniu
+#warning TODO - wrzucić na server
 
         [MTAThread]
         public static void Main()

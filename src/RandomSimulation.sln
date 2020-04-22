@@ -7,7 +7,12 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomSimulation", "RandomS
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomSimulationEngine", "RandomSimulationEngine\RandomSimulationEngine.csproj", "{2880695F-6FAC-47CD-B5B8-A7A467972121}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "RandomSimulation.Tests", "RandomSimulation.Tests\RandomSimulation.Tests.csproj", "{22DDD7F6-328A-4002-84DD-9DA3E9D11ECE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "RandomSimulation.Tests", "RandomSimulation.Tests\RandomSimulation.Tests.csproj", "{22DDD7F6-328A-4002-84DD-9DA3E9D11ECE}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{617481DE-02AB-41DF-A009-44B4BBB9188A}"
+	ProjectSection(SolutionItems) = preProject
+		.editorconfig = .editorconfig
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

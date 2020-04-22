@@ -4,6 +4,7 @@ using RandomSimulationEngine.Configuration;
 using RandomSimulationEngine.DateTime;
 using RandomSimulationEngine.Factories.ImageDownload;
 using RandomSimulationEngine.Health;
+using RandomSimulationEngine.History;
 using RandomSimulationEngine.Random;
 using RandomSimulationEngine.RandomBytesPuller;
 using RandomSimulationEngine.Rest;
@@ -29,6 +30,8 @@ namespace RandomSimulationEngine
             container.RegisterSingleton<IRandomService, RandomService>();
 
             container.RegisterSingleton<IConfigurationReader, ConfigurationReader>();
+
+            container.RegisterSingleton<IHistoryStorage, HistoryStorage>();
 
             container.RegisterSingleton<IImageDownloadTaskFactory, ImageDownloadTaskFactory>();
             container.RegisterSingleton<ITaskMaster, TaskMaster>();

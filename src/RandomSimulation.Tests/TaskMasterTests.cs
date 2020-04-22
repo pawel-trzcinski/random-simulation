@@ -62,7 +62,8 @@ namespace RandomSimulation.Tests
             (
                 ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                 ImageDownloadConfigurationTests.CreateCorrectConfiguration(),
-                TasksConfigurationTests.CreateCorrectConfiguration()
+                TasksConfigurationTests.CreateCorrectConfiguration(),
+                HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
             Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
@@ -105,7 +106,8 @@ namespace RandomSimulation.Tests
             (
                 ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                 ImageDownloadConfigurationTests.CreateCorrectConfiguration(),
-                TasksConfigurationTests.CreateCorrectConfiguration()
+                TasksConfigurationTests.CreateCorrectConfiguration(),
+                HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
             Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
@@ -143,7 +145,8 @@ namespace RandomSimulation.Tests
             (
                 ThrottlingConfigurationTests.CreateCorrectConfiguration(),
                 ImageDownloadConfigurationTests.CreateCorrectConfiguration(),
-                TasksConfigurationTests.CreateCorrectConfiguration()
+                TasksConfigurationTests.CreateCorrectConfiguration(),
+                HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
             Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();

@@ -19,15 +19,18 @@ namespace RandomSimulationEngine.Configuration
 
         public TasksConfiguration Tasks { get; }
 
+        public HistoryConfiguration History { get; }
+
         /// <summary>
         /// Initializes a new instance of the <see cref="RandomSimulationConfiguration"/> class.
         /// </summary>
         [JsonConstructor]
-        public RandomSimulationConfiguration(ThrottlingConfiguration throttling, ImageDownloadConfiguration imageDownload, TasksConfiguration tasks)
+        public RandomSimulationConfiguration(ThrottlingConfiguration throttling, ImageDownloadConfiguration imageDownload, TasksConfiguration tasks, HistoryConfiguration history)
         {
             this.Throttling = throttling;
             this.ImageDownload = imageDownload;
             this.Tasks = tasks;
+            this.History = history;
 
             ValidateConfiguration();
         }
@@ -49,6 +52,11 @@ namespace RandomSimulationEngine.Configuration
             if (Tasks == null)
             {
                 throw new ArgumentNullException(nameof(Tasks));
+            }
+
+            if (History == null)
+            {
+                throw new ArgumentNullException(nameof(History));
             }
 
             _log.Info($"{nameof(RandomSimulationConfiguration)} valid");

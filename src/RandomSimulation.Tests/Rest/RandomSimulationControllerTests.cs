@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc;
 using Moq;
 using NUnit.Framework;
 using RandomSimulationEngine.Health;
+using RandomSimulationEngine.History;
 using RandomSimulationEngine.RandomBytesPuller;
 using RandomSimulationEngine.Rest;
 using RandomSimulationEngine.ValueCalculator;
@@ -21,8 +22,9 @@ namespace RandomSimulation.Tests.Rest
             Mock<IValueCalculator> valueCalculatorMock = new Mock<IValueCalculator>();
             Mock<IRandomBytesPuller> randomBytesPullerMock = new Mock<IRandomBytesPuller>();
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
 
-            using (RandomSimulationController controller = new RandomSimulationController(valueCalculatorMock.Object, randomBytesPullerMock.Object, healthCheckerMock.Object))
+            using (RandomSimulationController controller = new RandomSimulationController(valueCalculatorMock.Object, randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 StatusCodeResult result = controller.Test();
 
@@ -40,12 +42,17 @@ namespace RandomSimulation.Tests.Rest
             randomBytesPullerMock.Setup(p => p.Pull(4)).Returns(bytes);
 
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
 
-            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object))
+            bool storeExecuted = false;
+            historyStorage.Setup(p => p.StoreNext(It.IsAny<int>())).Callback<int>(i => storeExecuted = true);
+
+            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 ContentResult result = controller.Next();
 
                 Assert.AreEqual(next, Convert.ToInt32(result.Content));
+                Assert.True(storeExecuted);
             }
         }
 
@@ -63,12 +70,17 @@ namespace RandomSimulation.Tests.Rest
             valueCalculatorMock.Setup(p => p.GetInt32(bytes, It.IsAny<int>())).Returns(next);
 
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
 
-            using (RandomSimulationController controller = new RandomSimulationController(valueCalculatorMock.Object, randomBytesPullerMock.Object, healthCheckerMock.Object))
+            bool storeExecuted = false;
+            historyStorage.Setup(p => p.StoreNextMax(It.IsAny<int>())).Callback<int>(i => storeExecuted = true);
+
+            using (RandomSimulationController controller = new RandomSimulationController(valueCalculatorMock.Object, randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 ContentResult result = controller.Next(Math.Abs(_random.Next(1000, 1000 * 1000)));
 
                 Assert.AreEqual(next, Convert.ToInt32(result.Content));
+                Assert.True(storeExecuted);
             }
         }
 
@@ -86,12 +98,17 @@ namespace RandomSimulation.Tests.Rest
             valueCalculatorMock.Setup(p => p.GetInt32(bytes, It.IsAny<int>(), It.IsAny<int>())).Returns(next);
 
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
 
-            using (RandomSimulationController controller = new RandomSimulationController(valueCalculatorMock.Object, randomBytesPullerMock.Object, healthCheckerMock.Object))
+            bool storeExecuted = false;
+            historyStorage.Setup(p => p.StoreNextMinMax(It.IsAny<int>())).Callback<int>(i => storeExecuted = true);
+
+            using (RandomSimulationController controller = new RandomSimulationController(valueCalculatorMock.Object, randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 ContentResult result = controller.Next(Math.Abs(_random.Next(5, 999)), Math.Abs(_random.Next(1000, 1000 * 1000)));
 
                 Assert.AreEqual(next, Convert.ToInt32(result.Content));
+                Assert.True(storeExecuted);
             }
         }
 
@@ -105,12 +122,17 @@ namespace RandomSimulation.Tests.Rest
             randomBytesPullerMock.Setup(p => p.Pull(8)).Returns(bytes);
 
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
 
-            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object))
+            bool storeExecuted = false;
+            historyStorage.Setup(p => p.StoreNextDouble(It.IsAny<double>())).Callback<double>(i => storeExecuted = true);
+
+            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 ContentResult result = controller.NextDouble();
 
                 Assert.True(Math.Abs(next - Convert.ToDouble(result.Content)) < Double.Epsilon);
+                Assert.True(storeExecuted);
             }
         }
 
@@ -124,12 +146,17 @@ namespace RandomSimulation.Tests.Rest
             randomBytesPullerMock.Setup(p => p.Pull(bytes.Length)).Returns(bytes);
 
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
 
-            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object))
+            bool storeExecuted = false;
+            historyStorage.Setup(p => p.StoreNextBytes(It.IsAny<byte[]>())).Callback<byte[]>(i => storeExecuted = true);
+
+            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 ContentResult result = controller.NextBytes(bytes.Length);
 
                 Assert.True(bytes.SequenceEqual(Convert.FromBase64String(result.Content)));
+                Assert.True(storeExecuted);
             }
         }
 
@@ -141,7 +168,9 @@ namespace RandomSimulation.Tests.Rest
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
             healthCheckerMock.Setup(p => p.GetHealthStatus()).Returns(HealthStatus.Dead);
 
-            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object))
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
+
+            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 IActionResult result = controller.Health();
                 StatusCodeResult statusResult = result as StatusCodeResult;
@@ -161,13 +190,33 @@ namespace RandomSimulation.Tests.Rest
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
             healthCheckerMock.Setup(p => p.GetHealthStatus()).Returns(healthStatus);
 
-            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object))
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
+
+            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
             {
                 IActionResult result = controller.Health();
                 ContentResult contentResult = result as ContentResult;
 
                 Assert.IsNotNull(contentResult);
                 Assert.AreEqual((int) healthStatus, Convert.ToInt32(contentResult.Content));
+            }
+        }
+
+        [Test]
+        public void Histogram()
+        {
+            string content = Guid.NewGuid().ToString();
+
+            Mock<IRandomBytesPuller> randomBytesPullerMock = new Mock<IRandomBytesPuller>();
+            Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHistoryStorage> historyStorage = new Mock<IHistoryStorage>();
+            historyStorage.Setup(p => p.GetHistogramReport(It.IsAny<int>())).Returns(content);
+
+            using (RandomSimulationController controller = new RandomSimulationController(new ValueCalculator(), randomBytesPullerMock.Object, healthCheckerMock.Object, historyStorage.Object))
+            {
+                ContentResult result = controller.Histogram(50);
+
+                Assert.AreEqual(content, result.Content);
             }
         }
     }

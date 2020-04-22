@@ -1,6 +1,7 @@
 ﻿using System;
 using Moq;
 using NUnit.Framework;
+using RandomSimulation.Tests.Configuration;
 using RandomSimulationEngine.Configuration;
 using RandomSimulationEngine.Configuration.ImageDownload;
 using RandomSimulationEngine.Factories.ImageDownload;
@@ -29,7 +30,8 @@ namespace RandomSimulation.Tests.Factories
             (
                 new ThrottlingConfiguration(next2, 1000, 500, 5000),
                 new ImageDownloadConfiguration(new[] {"wp.pl"}, next3, 1, 1500),
-                new TasksConfiguration(next4)
+                new TasksConfiguration(next4),
+                HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
             Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
