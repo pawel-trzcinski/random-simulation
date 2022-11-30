@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading;
 
 namespace RandomSimulationEngine.Structures
 {
@@ -75,7 +76,7 @@ namespace RandomSimulationEngine.Structures
                 else
                 {
                     _lastIndex = (_lastIndex + 1) % _capacity;
-                    ++_count;
+                    _count = Interlocked.Increment(ref _count);
                     _queue[_lastIndex] = b;
                 }
             }
@@ -87,11 +88,11 @@ namespace RandomSimulationEngine.Structures
             {
                 if (_count < count)
                 {
-                    bytes = null;
+                    bytes = Array.Empty<byte>();
                     return false;
                 }
 
-                _count -= count;
+                _count = Interlocked.Add(ref _count, -count);
                 Span<byte> span = new Span<byte>(_queue);
 
                 if (_firstIndex <= _lastIndex) // no boundry passed

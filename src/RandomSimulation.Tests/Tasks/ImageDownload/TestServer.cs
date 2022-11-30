@@ -8,24 +8,25 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
 {
     public sealed class TestServer : IDisposable
     {
-        private IWebHost _webHost;
+        private readonly IWebHost _webHost;
 
         public TestServer()
         {
-            StartHosting();
+            _webHost = StartHosting();
         }
 
         /// <summary>
         /// Start REST service hosting.
         /// </summary>
-        private void StartHosting()
+        private IWebHost StartHosting()
         {
-            _webHost = WebHost.CreateDefaultBuilder(null)
+            IWebHost webHost = WebHost.CreateDefaultBuilder()
                 .UseKestrel(options => { options.AddServerHeader = false; })
-                .ConfigureServices(services => { services.AddMvc(); })
+                .ConfigureServices(services => { services.AddMvc(mvcOptions => { mvcOptions.EnableEndpointRouting = false; }); })
                 .Configure(app => { app.UseMvc(); })
                 .Build();
-            _webHost.StartAsync();
+            webHost.StartAsync();
+            return webHost;
         }
 
         /// <summary>

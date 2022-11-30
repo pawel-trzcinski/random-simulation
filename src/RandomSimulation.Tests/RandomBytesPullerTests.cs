@@ -25,7 +25,7 @@ namespace RandomSimulation.Tests
             {
                 Mock<ISingleSourceBytesProvider> sourceMock = new Mock<ISingleSourceBytesProvider>();
                 sourceMock.Setup(p => p.IsDataAvailable).Returns(false);
-                sourceMock.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(new byte[0]);
+                sourceMock.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Empty);
 
                 puller.Register(sourceMock.Object);
             }
@@ -49,7 +49,7 @@ namespace RandomSimulation.Tests
             {
                 Mock<ISingleSourceBytesProvider> sourceMock = new Mock<ISingleSourceBytesProvider>();
                 sourceMock.Setup(p => p.IsDataAvailable).Returns(true);
-                sourceMock.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(okArray);
+                sourceMock.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(okArray));
 
                 puller.Register(sourceMock.Object);
             }
@@ -58,7 +58,7 @@ namespace RandomSimulation.Tests
             {
                 Mock<ISingleSourceBytesProvider> sourceMock = new Mock<ISingleSourceBytesProvider>();
                 sourceMock.Setup(p => p.IsDataAvailable).Returns(false);
-                sourceMock.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(notOkArray);
+                sourceMock.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(notOkArray));
 
                 puller.Register(sourceMock.Object);
             }

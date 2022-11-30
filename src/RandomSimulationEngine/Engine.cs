@@ -23,7 +23,7 @@ namespace RandomSimulationEngine
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(Engine));
 
-        private IWebHost _webHost;
+        private IWebHost? _webHost;
 
         private readonly IConfigurationReader _configurationReader;
         private readonly IControllerFactory _controllerFactory;
@@ -94,7 +94,7 @@ namespace RandomSimulationEngine
         {
             IThrottlingOptions throttling = _configurationReader.Configuration.Throttling;
 
-            _webHost = WebHost.CreateDefaultBuilder(null)
+            _webHost = WebHost.CreateDefaultBuilder()
                 .UseKestrel(options =>
                 {
                     options.AddServerHeader = false;
@@ -104,9 +104,9 @@ namespace RandomSimulationEngine
                 {
                     _log.Debug("Startup.ConfigureServices");
 
-                    services.AddSingleton(s => _controllerFactory);
+                    services.AddSingleton(_ => _controllerFactory);
                     services.AddLogging();
-                    services.AddMvc();
+                    services.AddMvc(options => options.EnableEndpointRouting = false);
 
                     services.AddSwaggerGen(c => { c.SwaggerDoc("random-simulation", new OpenApiInfo {Title = "Random Simulation", Version = "v1"}); });
                 })
@@ -129,7 +129,7 @@ namespace RandomSimulationEngine
         protected virtual void StopHosting()
         {
             _log.Info("Hosting stopping");
-            _webHost.StopAsync().Wait();
+            _webHost?.StopAsync().Wait();
             _log.Info("Hosting stopped");
         }
 

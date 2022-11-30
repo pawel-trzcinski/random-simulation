@@ -130,7 +130,7 @@ namespace RandomSimulationEngine.Rest.Throttling.Middlewares
 
         private void InternalDequeue()
         {
-            TaskCompletionSource<EnqueueStatus> enqueueTaskCompletionSource = _queue.First.Value;
+            TaskCompletionSource<EnqueueStatus> enqueueTaskCompletionSource = _queue.First!.Value;
 
             _queue.RemoveFirst();
 
@@ -139,8 +139,13 @@ namespace RandomSimulationEngine.Rest.Throttling.Middlewares
 
         #endregion dequeue
 
-        private void CancelEnqueue(object state)
+        private void CancelEnqueue(object? state)
         {
+            if (state == null)
+            {
+                return;
+            }
+
             try
             {
                 _guardSemaphore.Wait();

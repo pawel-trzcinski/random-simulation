@@ -1,4 +1,5 @@
-# ClassNamer
+# RandomSimulation
+Sources based on http://www.insecam.org/
 
 ### Using
 * **_127.0.0.1:15500/next_** Every GET pulls random integer

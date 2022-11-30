@@ -2,7 +2,6 @@
 using System.Security.Cryptography;
 using System.Threading;
 using System.Threading.Tasks;
-using JetBrains.Annotations;
 using log4net;
 using RandomSimulationEngine.Configuration;
 using RandomSimulationEngine.Random;
@@ -21,24 +20,24 @@ namespace RandomSimulationEngine.Tasks.Specific
         private readonly IRandomService _randomService;
         private readonly IConfigurationReader _configurationReader;
 
-        public event EventHandler ExecutionFinished;
+        public event EventHandler? ExecutionFinished;
 
         private readonly string _url;
 
         private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
         private readonly object _executionLockObject = new object();
 
-        public bool IsDataAvailable => _queue != null && _queue.Count > 0;
+        public bool IsDataAvailable => _queue.Count > 0;
 
         private volatile bool _isRunning;
         public bool IsRunning => _isRunning;
 
-        private byte[] _previousImage;
+        private byte[]? _previousImage;
         private readonly ConcurrentLimitedByteQueue _queue;
 
-        private Task _mainTask;
+        private Task? _mainTask;
 
-        public bool IsAlive => _mainTask.Status == TaskStatus.Running;
+        public bool IsAlive => _mainTask?.Status == TaskStatus.Running;
 
         public ImageDownloadTask(IWebClientWrapper webClientWrapper, IRandomService randomService, IConfigurationReader configurationReader, string url)
         {
@@ -81,7 +80,7 @@ namespace RandomSimulationEngine.Tasks.Specific
                         {
                             _isRunning = true;
                             _log.Debug($"Downloading from {_url}");
-                            byte[] bytes = _webClientWrapper.GetImageBytes(_url, cancellationToken);
+                            byte[] bytes = _webClientWrapper.GetImageBytes(_url, cancellationToken).Result;
                             if (bytes.Length == 0)
                             {
                                 throw new InvalidOperationException($"Not enoug bytes received ({bytes.Length})");
@@ -95,7 +94,7 @@ namespace RandomSimulationEngine.Tasks.Specific
                             byte[] noise = GetNoise(bytes);
 
                             // remove previous bytes from memory
-                            for (int i = 0; i < _previousImage.Length; i++)
+                            for (int i = 0; i < _previousImage!.Length; i++)
                             {
                                 _previousImage[i] = 0;
                             }
@@ -138,7 +137,7 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         #region ConsumeBytes
 
-        private byte[] GetNoise([NotNull] byte[] currentImage)
+        private byte[] GetNoise(byte[] currentImage)
         {
             int resultCount = Math.Min(currentImage.Length, (_previousImage ?? new byte[0]).Length);
 
@@ -199,7 +198,7 @@ namespace RandomSimulationEngine.Tasks.Specific
         private void ConsumeBytesForOneHash(ReadOnlySpan<byte> span)
         {
             byte[] hash;
-            using (SHA512 sha = new SHA512Managed())
+            using (SHA512 sha = SHA512.Create())
             {
                 hash = sha.ComputeHash(span.ToArray());
             }
@@ -219,17 +218,18 @@ namespace RandomSimulationEngine.Tasks.Specific
             _resetEvent.Set();
         }
 
-        [CanBeNull]
-        public byte[] GetBytes(int count)
+        public BytesProvidingResult GetBytes(int count)
         {
             int queueCount = _queue.Count;
             if (queueCount < count)
             {
                 _log.Debug($"Not enough data in queue. Needed {count}. Adtual: {queueCount}");
-                return null;
+                return BytesProvidingResult.Empty();
             }
 
-            return _queue.TryFetch(count, out byte[] result) ? result : null;
+            return _queue.TryFetch(count, out byte[] result)
+                ? BytesProvidingResult.Create(result)
+                : BytesProvidingResult.Empty();
         }
     }
 }

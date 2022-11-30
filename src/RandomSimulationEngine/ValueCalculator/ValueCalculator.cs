@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 
 namespace RandomSimulationEngine.ValueCalculator
 {
@@ -8,13 +7,8 @@ namespace RandomSimulationEngine.ValueCalculator
         private static readonly double _originalMin = Convert.ToDouble(Int32.MinValue);
         private static readonly double _originalRange = Convert.ToDouble(Int32.MaxValue) - Convert.ToDouble(Int32.MinValue);
 
-        public double GetDouble([NotNull] byte[] bytes)
+        public double GetDouble(byte[] bytes)
         {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException(nameof(bytes));
-            }
-
             if (bytes.Length != 8)
             {
                 throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 8", nameof(bytes));
@@ -23,13 +17,8 @@ namespace RandomSimulationEngine.ValueCalculator
             return BitConverter.ToDouble(bytes, 0);
         }
 
-        public int GetInt32([NotNull] byte[] bytes)
+        public int GetInt32(byte[] bytes)
         {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException(nameof(bytes));
-            }
-
             if (bytes.Length != 4)
             {
                 throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 4", nameof(bytes));
@@ -38,13 +27,8 @@ namespace RandomSimulationEngine.ValueCalculator
             return BitConverter.ToInt32(bytes, 0);
         }
 
-        public int GetInt32([NotNull] byte[] bytes, int max)
+        public int GetInt32(byte[] bytes, int max)
         {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException(nameof(bytes));
-            }
-
             if (bytes.Length != 4)
             {
                 throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 4", nameof(bytes));
@@ -58,13 +42,8 @@ namespace RandomSimulationEngine.ValueCalculator
             return Normalize(BitConverter.ToInt32(bytes, 0), 0, max);
         }
 
-        public int GetInt32([NotNull] byte[] bytes, int min, int max)
+        public int GetInt32(byte[] bytes, int min, int max)
         {
-            if (bytes == null)
-            {
-                throw new ArgumentNullException(nameof(bytes));
-            }
-
             if (bytes.Length != 4)
             {
                 throw new ArgumentException($"{nameof(bytes)}.{nameof(bytes.Length)} should equal to 4", nameof(bytes));

@@ -1,5 +1,4 @@
 ﻿using System;
-using JetBrains.Annotations;
 using System.IO;
 using System.Threading;
 
@@ -9,7 +8,7 @@ namespace RandomSimulationEngine.Extensions
     {
         public const int COPY_BUFFER_SIZE = 4 * 1024;
 
-        public static void CopyTo(this Stream source, [NotNull] Stream destination, CancellationToken cancellationToken)
+        public static void CopyTo(this Stream source, Stream destination, CancellationToken cancellationToken)
         {
             if (destination == null)
             {

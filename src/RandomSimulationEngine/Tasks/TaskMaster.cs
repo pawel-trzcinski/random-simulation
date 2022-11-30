@@ -42,7 +42,7 @@ namespace RandomSimulationEngine.Tasks
             }
         }
 
-        private void PokableTaskOnExecutionFinished(object sender, EventArgs e)
+        private void PokableTaskOnExecutionFinished(object? sender, EventArgs e)
         {
             try
             {
@@ -89,17 +89,12 @@ namespace RandomSimulationEngine.Tasks
         {
             try
             {
-                while (true)
+                while (!cancellationToken.IsCancellationRequested)
                 {
-                    if (cancellationToken.IsCancellationRequested)
-                    {
-                        return;
-                    }
-
                     TimeSpan checkInterval = _checkInterval;
                     try
                     {
-                        LinkedListNode<IPokableTask> current;
+                        LinkedListNode<IPokableTask>? current;
                         lock (_lockObject)
                         {
                             // idle time exceeded; find last non-running

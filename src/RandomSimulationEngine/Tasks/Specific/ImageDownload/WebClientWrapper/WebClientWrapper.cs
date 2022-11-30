@@ -1,24 +1,16 @@
-﻿using System.IO;
-using System.Net;
+﻿using System.Net.Http;
 using System.Threading;
-using RandomSimulationEngine.Extensions;
+using System.Threading.Tasks;
 
 namespace RandomSimulationEngine.Tasks.Specific.ImageDownload.WebClientWrapper
 {
     public class WebClientWrapper : IWebClientWrapper
     {
-        public byte[] GetImageBytes(string sourceUrl, CancellationToken cancellationToken)
+        public async Task<byte[]> GetImageBytes(string sourceUrl, CancellationToken cancellationToken)
         {
-            HttpWebRequest req = (HttpWebRequest) WebRequest.Create(sourceUrl);
-
-            using (WebResponse resp = req.GetResponse())
-            using (Stream stream = resp.GetResponseStream())
+            using (HttpClient client = new HttpClient())
             {
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    stream.CopyTo(ms, cancellationToken);
-                    return ms.ToArray();
-                }
+                return await client.GetByteArrayAsync(sourceUrl, cancellationToken);
             }
         }
     }

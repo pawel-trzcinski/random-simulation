@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:2.1 as build-stage
+FROM mcr.microsoft.com/dotnet/core/sdk:6.0 as build-stage
 
 WORKDIR /app
 COPY src .
@@ -11,7 +11,7 @@ RUN dotnet vstest --logger:"console;verbosity=detailed" \
 RUN dotnet publish /app/RandomSimulation/RandomSimulation.csproj -c Release -o /out -f netcoreapp2.1
 
 #####################################################
-FROM mcr.microsoft.com/dotnet/core/runtime:2.1-alpine
+FROM mcr.microsoft.com/dotnet/core/runtime:6.0-alpine
 
 COPY --from=build-stage /out /out
 

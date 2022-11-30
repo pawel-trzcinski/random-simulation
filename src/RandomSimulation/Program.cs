@@ -13,8 +13,8 @@ namespace RandomSimulation
 
         private static readonly AutoResetEvent _closing = new AutoResetEvent(false);
         private static readonly TimeSpan _closingTimeout = TimeSpan.FromSeconds(10);
-        private static Task _mainTask;
-        private static IEngine _engine;
+        private static Task? _mainTask;
+        private static IEngine? _engine;
 
         [MTAThread]
         public static void Main()
@@ -45,16 +45,16 @@ namespace RandomSimulation
             _log.Debug(nameof(Default_Unloading));
         }
 
-        private static void CurrentDomain_ProcessExit(object sender, EventArgs e)
+        private static void CurrentDomain_ProcessExit(object? sender, EventArgs e)
         {
             try
             {
                 _log.Info("Process exiting");
 
-                _engine.Stop();
+                _engine!.Stop();
 
                 _log.Debug("Waiting for main task to end");
-                _mainTask.Wait(_closingTimeout);
+                _mainTask!.Wait(_closingTimeout);
             }
             catch (Exception ex)
             {
@@ -66,7 +66,7 @@ namespace RandomSimulation
             }
         }
 
-        private static void OnExit(object sender, ConsoleCancelEventArgs args)
+        private static void OnExit(object? sender, ConsoleCancelEventArgs args)
         {
             _log.Info("Exit invoked");
             _closing.Set();
