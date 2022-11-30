@@ -53,7 +53,7 @@ namespace RandomSimulationEngine.Rest
             }
 
             _log.Debug("Disposing of Scope feature");
-            context.HttpContext.Features.Get<Scope>().Dispose();
+            context.HttpContext.Features.Get<Scope>()?.Dispose();
         }
     }
 }

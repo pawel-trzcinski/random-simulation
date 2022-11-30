@@ -13,16 +13,6 @@ namespace RandomSimulation.Tests.Extensions
     {
         private static readonly TimeSpan _safetyTestTime = TimeSpan.FromSeconds(10);
 
-        [Test]
-        public void DestinationMustNotBeNull()
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                // ReSharper disable once AssignNullToNotNullAttribute
-                Assert.Throws<ArgumentNullException>(() => ms.CopyTo(null, CancellationToken.None));
-            }
-        }
-
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(10)]

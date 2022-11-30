@@ -20,7 +20,7 @@ namespace RandomSimulation.Tests.Configuration
             return new ImageDownloadConfiguration(frameGrabUrls, downloadIntervalS, oneImageHashCount, taskBytesCacheCapacity);
         }
 
-        public static ImageDownloadConfiguration CreateCorrectConfiguration(string[] urlsOverload = null, int downloadIntervalOverride = 90)
+        public static ImageDownloadConfiguration CreateCorrectConfiguration(string[]? urlsOverload = null, int downloadIntervalOverride = 90)
         {
             return CreateConfiguration(urlsOverload ?? _urls, downloadIntervalOverride);
         }
@@ -38,15 +38,9 @@ namespace RandomSimulation.Tests.Configuration
         }
 
         [Test]
-        public void ValidationError_NullUrls()
-        {
-            Assert.Throws<ArgumentNullException>(() => CreateConfiguration(null));
-        }
-
-        [Test]
         public void ValidationError_EmptyUrls()
         {
-            Assert.Throws<ArgumentException>(() => CreateConfiguration(new string[0]));
+            Assert.Throws<ArgumentException>(() => CreateConfiguration(Array.Empty<string>()));
         }
 
         [Test]

@@ -1,9 +1,10 @@
 ﻿using System.Threading;
+using System.Threading.Tasks;
 
 namespace RandomSimulationEngine.Tasks.Specific.ImageDownload.WebClientWrapper
 {
     public interface IWebClientWrapper
     {
-        byte[] GetImageBytes(string sourceUrl, CancellationToken cancellationToken);
+        Task<byte[]> GetImageBytes(string sourceUrl, CancellationToken cancellationToken);
     }
 }

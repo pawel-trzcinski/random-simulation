@@ -29,15 +29,6 @@ namespace RandomSimulation.Tests
 
         #region GetDouble
 
-        [Test]
-        public void GetDouble_NotNullCheck()
-        {
-
-            ValueCalculator calculator = new ValueCalculator();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => calculator.GetDouble(null));
-        }
-
         [TestCase(0)]
         [TestCase(1)]
         [TestCase(4)]
@@ -63,15 +54,6 @@ namespace RandomSimulation.Tests
         #endregion GetDouble
 
         #region GetInt32
-
-        [Test]
-        public void GetInt32_NotNullCheck()
-        {
-
-            ValueCalculator calculator = new ValueCalculator();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => calculator.GetInt32(null));
-        }
 
         [TestCase(0)]
         [TestCase(1)]
@@ -99,18 +81,6 @@ namespace RandomSimulation.Tests
         #endregion GetInt32
 
         #region GetInt32Max
-
-        [TestCase(1)]
-        [TestCase(2)]
-        [TestCase(10)]
-        [TestCase(100)]
-        [TestCase(Int32.MaxValue)]
-        public void GetInt32Max_NotNullCheck(int max)
-        {
-            ValueCalculator calculator = new ValueCalculator();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => calculator.GetInt32(null, max));
-        }
 
         [Test]
         [Combinatorial]
@@ -155,15 +125,6 @@ namespace RandomSimulation.Tests
         #endregion GetInt32Max
 
         #region GetInt32MinMax
-
-        [Test]
-        public void GetInt32MinMax_NotNullCheck([ValueSource(nameof(_ranges))] (int min, int max) range)
-        {
-            (int min, int max) = range;
-            ValueCalculator calculator = new ValueCalculator();
-            // ReSharper disable once AssignNullToNotNullAttribute
-            Assert.Throws<ArgumentNullException>(() => calculator.GetInt32(null, min, max));
-        }
 
         [Test]
         [Combinatorial]

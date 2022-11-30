@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System.Configuration;
+using System.IO;
 using log4net;
 using Newtonsoft.Json.Linq;
 
@@ -13,7 +14,7 @@ namespace RandomSimulationEngine.Configuration
         private static readonly ILog _log = LogManager.GetLogger(typeof(ConfigurationReader));
 
         private static readonly object _lockObject = new object();
-        private volatile RandomSimulationConfiguration _randomSimulationConfiguration;
+        private volatile RandomSimulationConfiguration? _randomSimulationConfiguration;
 
         private readonly string _settingsFile;
 
@@ -40,11 +41,16 @@ namespace RandomSimulationEngine.Configuration
 
                     _log.Debug($"Configuration from file: {settings}");
 
-                    this._randomSimulationConfiguration = settings[nameof(RandomSimulationConfiguration)]
-                        .ToObject<RandomSimulationConfiguration>();
+                    JToken? configurationObject = settings[nameof(RandomSimulationConfiguration)];
+                    if (configurationObject == null)
+                    {
+                        throw new ConfigurationErrorsException($"Unable to find {nameof(RandomSimulationConfiguration)} token");
+                    }
+
+                    this._randomSimulationConfiguration = configurationObject.ToObject<RandomSimulationConfiguration>();
                 }
 
-                return this._randomSimulationConfiguration;
+                return this._randomSimulationConfiguration!;
             }
         }
 

@@ -30,7 +30,7 @@ namespace RandomSimulationEngine.Rest.Throttling.Middlewares
                 if (enqueueStatus != EnqueueStatus.AllowExecution && !context.RequestAborted.IsCancellationRequested)
                 {
                     var responseFeature = context.Features.Get<IHttpResponseFeature>();
-                    responseFeature.StatusCode = StatusCodes.Status503ServiceUnavailable;
+                    responseFeature!.StatusCode = StatusCodes.Status503ServiceUnavailable;
                     responseFeature.ReasonPhrase = enqueueStatus.ToString();
 
                     return;

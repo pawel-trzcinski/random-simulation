@@ -13,11 +13,11 @@ namespace RandomSimulation.Tests
         [Test]
         public void ConsecutiveNextGiveDifferentValues()
         {
-            const int numberOfRepeats = 100;
-            HashSet<int> testSet = new HashSet<int>(numberOfRepeats);
+            const int NUMBER_OF_REPEATS = 100;
+            HashSet<int> testSet = new HashSet<int>(NUMBER_OF_REPEATS);
 
             RandomService service = new RandomService(new DateTimeService());
-            for (int i = 0; i < numberOfRepeats; i++)
+            for (int i = 0; i < NUMBER_OF_REPEATS; i++)
             {
                 Assert.True(testSet.Add(service.Next()));
             }
@@ -26,21 +26,21 @@ namespace RandomSimulation.Tests
         [Test]
         public void ConsecutiveNextMaxGiveDifferentValues()
         {
-            const int numberOfRepeats = 100;
-            const int max = 10 * 1000 * 1000;
-            HashSet<int> testSet = new HashSet<int>(numberOfRepeats);
+            const int NUMBER_OF_REPEATS = 100;
+            const int MAX = 10 * 1000 * 1000;
+            HashSet<int> testSet = new HashSet<int>(NUMBER_OF_REPEATS);
 
             RandomService service = new RandomService(new DateTimeService());
-            for (int i = 0; i < numberOfRepeats; i++)
+            for (int i = 0; i < NUMBER_OF_REPEATS; i++)
             {
-                Assert.True(testSet.Add(service.Next(max)));
+                Assert.True(testSet.Add(service.Next(MAX)));
             }
         }
 
         [Test]
         public void TheSameSeedGivesTheSameResult()
         {
-            const int max = 10 * 1000 * 1000;
+            const int MAX = 10 * 1000 * 1000;
             int seed = new Random().Next();
 
             DateTime currentTime = DateTime.UtcNow;
@@ -54,12 +54,12 @@ namespace RandomSimulation.Tests
             currentTime += RandomService.SeedMinimumLifeTime + TimeSpan.FromSeconds(1);
             service.SetSeed(seed);
             int next = service.Next();
-            int nextMax = service.Next(max);
+            int nextMax = service.Next(MAX);
 
             currentTime += RandomService.SeedMinimumLifeTime + TimeSpan.FromSeconds(1);
             service.SetSeed(seed);
             Assert.AreEqual(next, service.Next());
-            Assert.AreEqual(nextMax, service.Next(max));
+            Assert.AreEqual(nextMax, service.Next(MAX));
         }
 
     }

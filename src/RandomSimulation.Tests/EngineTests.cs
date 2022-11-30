@@ -84,11 +84,11 @@ namespace RandomSimulation.Tests
             controllerFactoryMock.Setup(p => p.CreateController(It.IsAny<ControllerContext>())).Returns(new TestController());
 
             Mock<ISourceTask> sourceTaskMock1 = new Mock<ISourceTask>();
-            sourceTaskMock1.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(g1.ToByteArray());
+            sourceTaskMock1.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(g1.ToByteArray()));
             Mock<ISourceTask> sourceTaskMock2 = new Mock<ISourceTask>();
-            sourceTaskMock2.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(g2.ToByteArray());
+            sourceTaskMock2.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(g2.ToByteArray()));
             Mock<ISourceTask> sourceTaskMock3 = new Mock<ISourceTask>();
-            sourceTaskMock3.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(g3.ToByteArray());
+            sourceTaskMock3.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(g3.ToByteArray()));
 
             Mock<IImageDownloadTaskFactory> imageDownloadTaskFactoryMock = new Mock<IImageDownloadTaskFactory>();
             imageDownloadTaskFactoryMock.Setup(p => p.GetNewTask(url1)).Returns(sourceTaskMock1.Object);
@@ -97,24 +97,24 @@ namespace RandomSimulation.Tests
 
             int taskMasterRegistrations = 0;
             Mock<ITaskMaster> taskMasterMock = new Mock<ITaskMaster>();
-            taskMasterMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<IPokableTask>(t => { taskMasterRegistrations += 1; });
-            taskMasterMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<IPokableTask>(t => { taskMasterRegistrations += 2; });
-            taskMasterMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<IPokableTask>(t => { taskMasterRegistrations += 4; });
+            taskMasterMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<IPokableTask>(_ => { taskMasterRegistrations += 1; });
+            taskMasterMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<IPokableTask>(_ => { taskMasterRegistrations += 2; });
+            taskMasterMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<IPokableTask>(_ => { taskMasterRegistrations += 4; });
 
             bool tasksMasterTasksStarted = false;
-            taskMasterMock.Setup(p => p.StartTasks(It.IsAny<CancellationToken>())).Callback<CancellationToken>(ct => { tasksMasterTasksStarted = true; });
+            taskMasterMock.Setup(p => p.StartTasks(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => { tasksMasterTasksStarted = true; });
 
             int randomBytesPullerRegistrations = 0;
             Mock<IRandomBytesPuller> randomBytesPullerMock = new Mock<IRandomBytesPuller>();
-            randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<ISingleSourceBytesProvider>(t => { randomBytesPullerRegistrations += 1; });
-            randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<ISingleSourceBytesProvider>(t => { randomBytesPullerRegistrations += 2; });
-            randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<ISingleSourceBytesProvider>(t => { randomBytesPullerRegistrations += 4; });
+            randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<ISingleSourceBytesProvider>(_ => { randomBytesPullerRegistrations += 1; });
+            randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<ISingleSourceBytesProvider>(_ => { randomBytesPullerRegistrations += 2; });
+            randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<ISingleSourceBytesProvider>(_ => { randomBytesPullerRegistrations += 4; });
 
             int healthCheckerRegistrations = 0;
             Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
-            healthCheckerMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<IHealthProvider>(t => { healthCheckerRegistrations += 1; });
-            healthCheckerMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<IHealthProvider>(t => { healthCheckerRegistrations += 2; });
-            healthCheckerMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<IHealthProvider>(t => { healthCheckerRegistrations += 4; });
+            healthCheckerMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<IHealthProvider>(_ => { healthCheckerRegistrations += 1; });
+            healthCheckerMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<IHealthProvider>(_ => { healthCheckerRegistrations += 2; });
+            healthCheckerMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<IHealthProvider>(_ => { healthCheckerRegistrations += 4; });
 
             EngineTester engine = new EngineTester
             (

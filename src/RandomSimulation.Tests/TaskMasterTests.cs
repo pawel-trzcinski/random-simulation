@@ -33,7 +33,7 @@ namespace RandomSimulation.Tests
         {
             public string Id { get; }
 
-            public event EventHandler ExecutionFinished;
+            public event EventHandler? ExecutionFinished;
             public bool IsRunning { get; } = false;
 
             public PokableTaskTester(string id)
@@ -117,13 +117,13 @@ namespace RandomSimulation.Tests
 
             int executionsIndicator = 0;
             Mock<IPokableTask> pokableTaskMock1 = new Mock<IPokableTask>();
-            pokableTaskMock1.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(ct => executionsIndicator += 1);
+            pokableTaskMock1.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 1);
             Mock<IPokableTask> pokableTaskMock2 = new Mock<IPokableTask>();
-            pokableTaskMock2.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(ct => executionsIndicator += 2);
+            pokableTaskMock2.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 2);
             Mock<IPokableTask> pokableTaskMock3 = new Mock<IPokableTask>();
-            pokableTaskMock3.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(ct => executionsIndicator += 4);
+            pokableTaskMock3.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 4);
             Mock<IPokableTask> pokableTaskMock4 = new Mock<IPokableTask>();
-            pokableTaskMock4.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(ct => executionsIndicator += 8);
+            pokableTaskMock4.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 8);
 
             tester.Register(pokableTaskMock1.Object);
             tester.Register(pokableTaskMock2.Object);

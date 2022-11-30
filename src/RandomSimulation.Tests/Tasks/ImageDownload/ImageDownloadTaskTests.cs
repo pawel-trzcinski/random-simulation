@@ -1,10 +1,12 @@
 ﻿using System;
 using System.Threading;
+using System.Threading.Tasks;
 using Moq;
 using NUnit.Framework;
 using RandomSimulation.Tests.Configuration;
 using RandomSimulationEngine.Configuration;
 using RandomSimulationEngine.Random;
+using RandomSimulationEngine.Tasks;
 using RandomSimulationEngine.Tasks.Specific;
 using RandomSimulationEngine.Tasks.Specific.ImageDownload.WebClientWrapper;
 
@@ -28,13 +30,13 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
             int bytesPullCount = 0;
 
             Mock<IWebClientWrapper> webClientWrapperMock = new Mock<IWebClientWrapper>();
-            webClientWrapperMock.Setup(p => p.GetImageBytes(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(() => Helper.GetRandomArray(5000));
+            webClientWrapperMock.Setup(p => p.GetImageBytes(It.IsAny<string>(), It.IsAny<CancellationToken>())).Returns(() => Task.FromResult(Helper.GetRandomArray(5000)));
 
             bool randomSeedSet = false;
             Mock<IRandomService> randomServiceMock = new Mock<IRandomService>();
             randomServiceMock.Setup(p => p.Next()).Returns(1);
             randomServiceMock.Setup(p => p.Next(It.IsAny<int>())).Returns(1);
-            randomServiceMock.Setup(p => p.SetSeed(It.IsAny<int>())).Callback<int>(i => randomSeedSet = true);
+            randomServiceMock.Setup(p => p.SetSeed(It.IsAny<int>())).Callback<int>(_ => randomSeedSet = true);
 
             var configuration = new RandomSimulationConfiguration
             (
@@ -48,7 +50,7 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
             configurationReaderMock.Setup(p => p.Configuration).Returns(configuration);
 
             ImageDownloadTaskTester tester = new ImageDownloadTaskTester(webClientWrapperMock.Object, randomServiceMock.Object, configurationReaderMock.Object);
-            tester.ExecutionFinished += (sender, args) =>
+            tester.ExecutionFinished += (_, _) =>
             {
                 ++bytesPullCount;
 
@@ -59,7 +61,7 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
             };
 
             Assert.IsFalse(tester.IsDataAvailable);
-            Assert.IsNull(tester.GetBytes(20));
+            Assert.IsFalse(tester.GetBytes(20).IsDtataAvailable);
 
             tester.Start(source.Token);
 
@@ -69,9 +71,9 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
             Assert.IsTrue(randomSeedSet);
             Assert.IsFalse(tester.IsRunning);
 
-            byte[] bytes = tester.GetBytes(20);
-            Assert.IsNotNull(bytes);
-            Assert.AreEqual(20, bytes.Length);
+            BytesProvidingResult result = tester.GetBytes(20);
+            Assert.IsTrue(result.IsDtataAvailable);
+            Assert.AreEqual(20, result.Data.Count);
         }
     }
 }
