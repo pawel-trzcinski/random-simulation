@@ -1,17 +1,18 @@
-FROM mcr.microsoft.com/dotnet/core/sdk:6.0 as build-stage
+FROM mcr.microsoft.com/dotnet/sdk:6.0 as build-stage
 
 WORKDIR /app
 COPY src .
 
 RUN dotnet build RandomSimulation.sln -c Release
 
-RUN dotnet vstest --logger:"console;verbosity=detailed" \
-    /app/RandomSimulation.Tests/bin/Release/netcoreapp2.1/RandomSimulation.Tests.dll
+RUN dotnet test RandomSimulation.sln \
+	--logger:"console;verbosity=detailed" \
+	--no-build
 
-RUN dotnet publish /app/RandomSimulation/RandomSimulation.csproj -c Release -o /out -f netcoreapp2.1
+RUN dotnet publish /app/RandomSimulation/RandomSimulation.csproj -c Release -o /out -f net6.0
 
 #####################################################
-FROM mcr.microsoft.com/dotnet/core/runtime:6.0-alpine
+FROM mcr.microsoft.com/dotnet/runtime:6.0-alpine
 
 COPY --from=build-stage /out /out
 
