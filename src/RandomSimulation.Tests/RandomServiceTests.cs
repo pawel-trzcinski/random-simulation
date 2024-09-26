@@ -19,7 +19,7 @@ namespace RandomSimulation.Tests
             RandomService service = new RandomService(new DateTimeService());
             for (int i = 0; i < NUMBER_OF_REPEATS; i++)
             {
-                Assert.True(testSet.Add(service.Next()));
+                Assert.That(testSet.Add(service.Next()));
             }
         }
 
@@ -33,7 +33,7 @@ namespace RandomSimulation.Tests
             RandomService service = new RandomService(new DateTimeService());
             for (int i = 0; i < NUMBER_OF_REPEATS; i++)
             {
-                Assert.True(testSet.Add(service.Next(MAX)));
+                Assert.That(testSet.Add(service.Next(MAX)));
             }
         }
 
@@ -58,8 +58,8 @@ namespace RandomSimulation.Tests
 
             currentTime += RandomService.SeedMinimumLifeTime + TimeSpan.FromSeconds(1);
             service.SetSeed(seed);
-            Assert.AreEqual(next, service.Next());
-            Assert.AreEqual(nextMax, service.Next(MAX));
+            Assert.That(service.Next(), Is.EqualTo(next));
+            Assert.That(service.Next(MAX), Is.EqualTo(nextMax));
         }
 
     }

@@ -7,7 +7,7 @@ namespace RandomSimulation.Tests
     [TestFixture]
     public class ValueCalculatorTests
     {
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new();
 
         private static readonly (int min, int max)[] _ranges =
         {
@@ -118,8 +118,8 @@ namespace RandomSimulation.Tests
             byte[] inputArray = Helper.GetRandomArray(4);
             ValueCalculator calculator = new ValueCalculator();
             int value = calculator.GetInt32(inputArray, max);
-            Assert.IsTrue(value >= 0);
-            Assert.IsTrue(value < max);
+            Assert.That(value >= 0);
+            Assert.That(value < max);
         }
 
         #endregion GetInt32Max
@@ -173,8 +173,8 @@ namespace RandomSimulation.Tests
             byte[] inputArray = Helper.GetRandomArray(4);
             ValueCalculator calculator = new ValueCalculator();
             int value = calculator.GetInt32(inputArray, min, max);
-            Assert.IsTrue(value >= 0);
-            Assert.IsTrue(value < max);
+            Assert.That(value >= 0);
+            Assert.That(value < max);
         }
 
         #endregion GetInt32MinMax

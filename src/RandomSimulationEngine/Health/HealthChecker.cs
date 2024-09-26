@@ -5,7 +5,7 @@ namespace RandomSimulationEngine.Health
 {
     public class HealthChecker : IHealthChecker
     {
-        private readonly List<IHealthProvider> _providers = new List<IHealthProvider>(50);
+        private readonly List<IHealthProvider> _providers = new(50);
 
         public void Register(IHealthProvider healthProvider)
         {

@@ -30,11 +30,11 @@ namespace RandomSimulation.Tests.History
                 new Histogram(testArrayNextBytes, 20)
             );
 
-            Assert.True(Math.Abs(0 - report.Next.Histogram.LowerBound) < EPSILON);
-            Assert.True(Math.Abs(100 - report.NextMax.Histogram.LowerBound) < EPSILON);
-            Assert.True(Math.Abs(200 - report.NextMinMax.Histogram.LowerBound) < EPSILON);
-            Assert.True(Math.Abs(300 - report.NextDouble.Histogram.LowerBound) < EPSILON);
-            Assert.True(Math.Abs(400 - report.NextBytes.Histogram.LowerBound) < EPSILON);
+            Assert.That(Math.Abs(0 - report.Next.Histogram.LowerBound) < EPSILON);
+            Assert.That(Math.Abs(100 - report.NextMax.Histogram.LowerBound) < EPSILON);
+            Assert.That(Math.Abs(200 - report.NextMinMax.Histogram.LowerBound) < EPSILON);
+            Assert.That(Math.Abs(300 - report.NextDouble.Histogram.LowerBound) < EPSILON);
+            Assert.That(Math.Abs(400 - report.NextBytes.Histogram.LowerBound) < EPSILON);
         }
     }
 }

@@ -9,10 +9,10 @@ namespace RandomSimulationEngine.Rest.Throttling.Middlewares
     {
         #region Fields
 
-        private readonly SemaphoreSlim _guardSemaphore = new SemaphoreSlim(1, 1);
+        private readonly SemaphoreSlim _guardSemaphore = new(1, 1);
 
         private readonly IThrottlingOptions _options;
-        private readonly LinkedList<TaskCompletionSource<EnqueueStatus>> _queue = new LinkedList<TaskCompletionSource<EnqueueStatus>>();
+        private readonly LinkedList<TaskCompletionSource<EnqueueStatus>> _queue = new();
 
         private static readonly Task<EnqueueStatus> _queueFullTask = Task.FromResult(EnqueueStatus.QueueFull);
         private static readonly Task<EnqueueStatus> _queueCancelledTask = Task.FromResult(EnqueueStatus.Cancelled);

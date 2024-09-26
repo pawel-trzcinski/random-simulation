@@ -13,7 +13,7 @@ namespace RandomSimulationEngine.Configuration
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(ConfigurationReader));
 
-        private static readonly object _lockObject = new object();
+        private static readonly object _lockObject = new();
         private volatile RandomSimulationConfiguration? _randomSimulationConfiguration;
 
         private readonly string _settingsFile;

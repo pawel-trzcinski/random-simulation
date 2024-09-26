@@ -14,20 +14,20 @@ namespace RandomSimulationEngine.History
 
         private readonly HistoryConfiguration _configuration;
         
-        private readonly object _lockNext = new object();
-        protected readonly LinkedList<double> _listNext = new LinkedList<double>();
+        private readonly object _lockNext = new();
+        protected readonly LinkedList<double> _listNext = new();
 
-        private readonly object _lockNextMax = new object();
-        protected readonly LinkedList<double> _listNextMax = new LinkedList<double>();
+        private readonly object _lockNextMax = new();
+        protected readonly LinkedList<double> _listNextMax = new();
 
-        private readonly object _lockNextMinMax = new object();
-        protected readonly LinkedList<double> _listNextMinMax = new LinkedList<double>();
+        private readonly object _lockNextMinMax = new();
+        protected readonly LinkedList<double> _listNextMinMax = new();
 
-        private readonly object _lockNextDouble = new object();
-        protected readonly LinkedList<double> _listNextDouble = new LinkedList<double>();
+        private readonly object _lockNextDouble = new();
+        protected readonly LinkedList<double> _listNextDouble = new();
 
-        private readonly object _lockNextBytes = new object();
-        protected readonly LinkedList<double> _listNextBytes = new LinkedList<double>();
+        private readonly object _lockNextBytes = new();
+        protected readonly LinkedList<double> _listNextBytes = new();
 
         public HistoryStorage(IConfigurationReader configurationReader)
         {

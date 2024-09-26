@@ -24,8 +24,8 @@ namespace RandomSimulationEngine.Tasks.Specific
 
         private readonly string _url;
 
-        private readonly AutoResetEvent _resetEvent = new AutoResetEvent(false);
-        private readonly object _executionLockObject = new object();
+        private readonly AutoResetEvent _resetEvent = new(false);
+        private readonly object _executionLockObject = new();
 
         public bool IsDataAvailable => _queue.Count > 0;
 

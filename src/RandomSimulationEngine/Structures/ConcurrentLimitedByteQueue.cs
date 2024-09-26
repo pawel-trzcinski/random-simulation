@@ -10,7 +10,7 @@ namespace RandomSimulationEngine.Structures
         private volatile int _firstIndex = -1;
         private volatile int _lastIndex = -1;
         private volatile int _count;
-        private readonly object _lockObject = new object();
+        private readonly object _lockObject = new();
 
         // kolejka, która jest Thread - Safe
         // kolejka do której się wkłąda pojedyncze bajty albo ich array

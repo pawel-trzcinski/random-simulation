@@ -4,8 +4,8 @@ namespace RandomSimulationEngine.Rest.Throttling.Middlewares
 {
     public class CapacityCheckResult
     {
-        private static readonly CapacityCheckResult _allowed = new CapacityCheckResult(true, Task.FromResult(EnqueueStatus.AllowExecution));
-        private static readonly CapacityCheckResult _cancelled = new CapacityCheckResult(false, Task.FromResult(EnqueueStatus.Cancelled));
+        private static readonly CapacityCheckResult _allowed = new(true, Task.FromResult(EnqueueStatus.AllowExecution));
+        private static readonly CapacityCheckResult _cancelled = new(false, Task.FromResult(EnqueueStatus.Cancelled));
 
         /// <summary>
         /// <b>true</b> if capacity to execute is not excedeed

@@ -8,9 +8,9 @@ namespace RandomSimulationEngine.Random
         public static TimeSpan SeedMinimumLifeTime { get; } = TimeSpan.FromSeconds(5);
         private System.DateTime _seedBirth = System.DateTime.MinValue; // initial seed is always to be replaced
 
-        private System.Random _random = new System.Random();
+        private System.Random _random = new();
 
-        private readonly object _lockObject = new object();
+        private readonly object _lockObject = new();
 
         private readonly IDateTimeService _dateTimeService;
 

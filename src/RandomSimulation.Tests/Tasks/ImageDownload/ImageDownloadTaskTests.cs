@@ -60,20 +60,20 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
                 }
             };
 
-            Assert.IsFalse(tester.IsDataAvailable);
-            Assert.IsFalse(tester.GetBytes(20).IsDtataAvailable);
+            Assert.That(tester.IsDataAvailable, Is.False);
+            Assert.That(tester.GetBytes(20).IsDtataAvailable, Is.False);
 
             tester.Start(source.Token);
 
             source.Token.WaitHandle.WaitOne(TimeSpan.FromSeconds(3600));
 
-            Assert.IsTrue(tester.IsDataAvailable);
-            Assert.IsTrue(randomSeedSet);
-            Assert.IsFalse(tester.IsRunning);
+            Assert.That(tester.IsDataAvailable);
+            Assert.That(randomSeedSet);
+            Assert.That(tester.IsRunning, Is.False);
 
             BytesProvidingResult result = tester.GetBytes(20);
-            Assert.IsTrue(result.IsDtataAvailable);
-            Assert.AreEqual(20, result.Data.Count);
+            Assert.That(result.IsDtataAvailable);
+            Assert.That(result.Data.Count, Is.EqualTo(20));
         }
     }
 }

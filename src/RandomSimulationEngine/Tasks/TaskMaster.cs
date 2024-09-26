@@ -15,8 +15,8 @@ namespace RandomSimulationEngine.Tasks
 
         private readonly IDateTimeService _dateTimeService;
 
-        protected readonly LinkedList<IPokableTask> _tasks = new LinkedList<IPokableTask>();
-        private readonly object _lockObject = new object();
+        protected readonly LinkedList<IPokableTask> _tasks = new();
+        private readonly object _lockObject = new();
 
         private readonly TimeSpan _checkInterval = TimeSpan.FromSeconds(1);
         private readonly TimeSpan _checkAfterPokeInterval = TimeSpan.FromSeconds(2);

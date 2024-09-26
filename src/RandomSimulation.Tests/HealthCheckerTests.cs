@@ -23,7 +23,7 @@ namespace RandomSimulation.Tests
                 checker.Register(healthProviderMock.Object);
             }
 
-            Assert.AreEqual(HealthStatus.Healthy, checker.GetHealthStatus());
+            Assert.That(checker.GetHealthStatus(), Is.EqualTo(HealthStatus.Healthy));
         }
 
         [TestCase(1)]
@@ -42,7 +42,7 @@ namespace RandomSimulation.Tests
                 checker.Register(healthProviderMock.Object);
             }
 
-            Assert.AreEqual(HealthStatus.Dead, checker.GetHealthStatus());
+            Assert.That(checker.GetHealthStatus(), Is.EqualTo(HealthStatus.Dead));
         }
 
         [TestCase(4)]
@@ -70,7 +70,7 @@ namespace RandomSimulation.Tests
                 checker.Register(healthProviderMock.Object);
             }
 
-            Assert.AreEqual(HealthStatus.SoSo, checker.GetHealthStatus());
+            Assert.That(checker.GetHealthStatus(), Is.EqualTo(HealthStatus.SoSo));
         }
 
         [TestCase(4)]
@@ -98,7 +98,7 @@ namespace RandomSimulation.Tests
                 checker.Register(healthProviderMock.Object);
             }
 
-            Assert.AreEqual(HealthStatus.AlmostDead, checker.GetHealthStatus());
+            Assert.That(checker.GetHealthStatus(), Is.EqualTo(HealthStatus.AlmostDead));
         }
     }
 }

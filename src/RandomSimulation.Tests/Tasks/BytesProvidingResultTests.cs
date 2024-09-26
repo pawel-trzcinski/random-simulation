@@ -12,16 +12,16 @@ public class BytesProvidingResultTests
     public void EmptyResultsHasNoData()
     {
         BytesProvidingResult emptyResult = BytesProvidingResult.Empty();
-        Assert.IsFalse(emptyResult.IsDtataAvailable);
-        Assert.IsEmpty(emptyResult.Data);
+        Assert.That(emptyResult.IsDtataAvailable, Is.False);
+        Assert.That(emptyResult.Data, Is.Empty);
     }
 
     [Test]
     public void EmptyInputArrayProducesEmptyResult()
     {
         BytesProvidingResult emptyResult = BytesProvidingResult.Create(Array.Empty<byte>());
-        Assert.IsFalse(emptyResult.IsDtataAvailable);
-        Assert.IsEmpty(emptyResult.Data);
+        Assert.That(emptyResult.IsDtataAvailable, Is.False);
+        Assert.That(emptyResult.Data, Is.Empty);
     }
 
     [Test]
@@ -31,8 +31,8 @@ public class BytesProvidingResultTests
         new Random().NextBytes(bytes);
 
         BytesProvidingResult result = BytesProvidingResult.Create(bytes);
-        Assert.IsTrue(result.IsDtataAvailable);
-        Assert.IsNotEmpty(result.Data);
-        Assert.IsTrue(bytes.SequenceEqual(result.Data));
+        Assert.That(result.IsDtataAvailable);
+        Assert.That(result.Data, Is.Not.Empty);
+        Assert.That(bytes.SequenceEqual(result.Data));
     }
 }

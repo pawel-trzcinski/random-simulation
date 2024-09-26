@@ -14,7 +14,7 @@ namespace RandomSimulation.Tests.History
     {
         private const int DEFAULT_SAMPLES_COUNT = HistoryConfiguration.MIN_SAMPLES;
 
-        private static readonly Random _random = new Random();
+        private static readonly Random _random = new ();
 
         private class HistoryStorageTester : HistoryStorage
         {
@@ -62,13 +62,13 @@ namespace RandomSimulation.Tests.History
             tester.StoreNext(v2);
             tester.StoreNext(v3);
 
-            Assert.AreEqual(3, tester.Next.Count);
-            Assert.AreEqual(0, tester.NextMax.Count);
-            Assert.AreEqual(0, tester.NextMinMax.Count);
-            Assert.AreEqual(0, tester.NextDouble.Count);
-            Assert.AreEqual(0, tester.NextBytes.Count);
+            Assert.That(tester.Next.Count, Is.EqualTo(3));
+            Assert.That(tester.NextMax.Count, Is.Zero);
+            Assert.That(tester.NextMinMax.Count, Is.Zero);
+            Assert.That(tester.NextDouble.Count, Is.Zero);
+            Assert.That(tester.NextBytes.Count, Is.Zero);
 
-            Assert.True(new double[] {v1, v2, v3}.SequenceEqual(tester.Next.ToArray()));
+            Assert.That(new double[] {v1, v2, v3}.SequenceEqual(tester.Next.ToArray()));
         }
 
         [Test]
@@ -84,13 +84,13 @@ namespace RandomSimulation.Tests.History
             tester.StoreNextMax(v2);
             tester.StoreNextMax(v3);
 
-            Assert.AreEqual(0, tester.Next.Count);
-            Assert.AreEqual(3, tester.NextMax.Count);
-            Assert.AreEqual(0, tester.NextMinMax.Count);
-            Assert.AreEqual(0, tester.NextDouble.Count);
-            Assert.AreEqual(0, tester.NextBytes.Count);
+            Assert.That(tester.Next.Count, Is.Zero);
+            Assert.That(tester.NextMax.Count, Is.EqualTo(3));
+            Assert.That(tester.NextMinMax.Count, Is.Zero);
+            Assert.That(tester.NextDouble.Count, Is.Zero);
+            Assert.That(tester.NextBytes.Count, Is.Zero);
 
-            Assert.True(new double[] {v1, v2, v3}.SequenceEqual(tester.NextMax.ToArray()));
+            Assert.That(new double[] {v1, v2, v3}.SequenceEqual(tester.NextMax.ToArray()));
         }
 
         [Test]
@@ -106,13 +106,13 @@ namespace RandomSimulation.Tests.History
             tester.StoreNextMinMax(v2);
             tester.StoreNextMinMax(v3);
 
-            Assert.AreEqual(0, tester.Next.Count);
-            Assert.AreEqual(0, tester.NextMax.Count);
-            Assert.AreEqual(3, tester.NextMinMax.Count);
-            Assert.AreEqual(0, tester.NextDouble.Count);
-            Assert.AreEqual(0, tester.NextBytes.Count);
+            Assert.That(tester.Next.Count, Is.Zero);
+            Assert.That(tester.NextMax.Count, Is.Zero);
+            Assert.That(tester.NextMinMax.Count, Is.EqualTo(3));
+            Assert.That(tester.NextDouble.Count, Is.Zero);
+            Assert.That(tester.NextBytes.Count, Is.Zero);
 
-            Assert.True(new double[] {v1, v2, v3}.SequenceEqual(tester.NextMinMax.ToArray()));
+            Assert.That(new double[] { v1, v2, v3 }.SequenceEqual(tester.NextMinMax.ToArray()));
         }
 
         [Test]
@@ -128,13 +128,13 @@ namespace RandomSimulation.Tests.History
             tester.StoreNextDouble(v2);
             tester.StoreNextDouble(v3);
 
-            Assert.AreEqual(0, tester.Next.Count);
-            Assert.AreEqual(0, tester.NextMax.Count);
-            Assert.AreEqual(0, tester.NextMinMax.Count);
-            Assert.AreEqual(3, tester.NextDouble.Count);
-            Assert.AreEqual(0, tester.NextBytes.Count);
+            Assert.That(tester.Next.Count, Is.Zero);
+            Assert.That(tester.NextMax.Count, Is.Zero);
+            Assert.That(tester.NextMinMax.Count, Is.Zero);
+            Assert.That(tester.NextDouble.Count, Is.EqualTo(3));
+            Assert.That(tester.NextBytes.Count, Is.Zero);
 
-            Assert.True(new[] {v1, v2, v3}.SequenceEqual(tester.NextDouble.ToArray()));
+            Assert.That(new[] {v1, v2, v3}.SequenceEqual(tester.NextDouble.ToArray()));
         }
 
         [Test]
@@ -149,13 +149,13 @@ namespace RandomSimulation.Tests.History
             tester.StoreNextBytes(new[] {v1});
             tester.StoreNextBytes(new[] {v2, v3});
 
-            Assert.AreEqual(0, tester.Next.Count);
-            Assert.AreEqual(0, tester.NextMax.Count);
-            Assert.AreEqual(0, tester.NextMinMax.Count);
-            Assert.AreEqual(0, tester.NextDouble.Count);
-            Assert.AreEqual(3, tester.NextBytes.Count);
+            Assert.That(tester.Next.Count, Is.Zero);
+            Assert.That(tester.NextMax.Count, Is.Zero);
+            Assert.That(tester.NextMinMax.Count, Is.Zero);
+            Assert.That(tester.NextDouble.Count, Is.Zero);
+            Assert.That(tester.NextBytes.Count, Is.EqualTo(3));
 
-            Assert.True(new double[] {v1, v2, v3}.SequenceEqual(tester.NextBytes.ToArray()));
+            Assert.That(new double[] {v1, v2, v3}.SequenceEqual(tester.NextBytes.ToArray()));
         }
 
         #endregion AddNotFull
@@ -196,17 +196,17 @@ namespace RandomSimulation.Tests.History
                 tester.StoreNextBytes(new[] {nextByte});
             }
 
-            Assert.AreEqual(DEFAULT_SAMPLES_COUNT, tester.Next.Count);
-            Assert.AreEqual(DEFAULT_SAMPLES_COUNT, tester.NextMax.Count);
-            Assert.AreEqual(DEFAULT_SAMPLES_COUNT, tester.NextMinMax.Count);
-            Assert.AreEqual(DEFAULT_SAMPLES_COUNT, tester.NextDouble.Count);
-            Assert.AreEqual(DEFAULT_SAMPLES_COUNT, tester.NextBytes.Count);
+            Assert.That(tester.Next.Count, Is.EqualTo(DEFAULT_SAMPLES_COUNT));
+            Assert.That(tester.NextMax.Count, Is.EqualTo(DEFAULT_SAMPLES_COUNT));
+            Assert.That(tester.NextMinMax.Count, Is.EqualTo(DEFAULT_SAMPLES_COUNT));
+            Assert.That(tester.NextDouble.Count, Is.EqualTo(DEFAULT_SAMPLES_COUNT));
+            Assert.That(tester.NextBytes.Count, Is.EqualTo(DEFAULT_SAMPLES_COUNT));
 
-            Assert.True(expectedNext.Skip(OVERHEAD).SequenceEqual(tester.Next.ToArray()));
-            Assert.True(expectedNextMax.Skip(OVERHEAD).SequenceEqual(tester.NextMax.ToArray()));
-            Assert.True(expectedNextMinMax.Skip(OVERHEAD).SequenceEqual(tester.NextMinMax.ToArray()));
-            Assert.True(expectedNextDouble.Skip(OVERHEAD).SequenceEqual(tester.NextDouble.ToArray()));
-            Assert.True(expectedNextBytes.Skip(OVERHEAD).SequenceEqual(tester.NextBytes.ToArray()));
+            Assert.That(expectedNext.Skip(OVERHEAD).SequenceEqual(tester.Next.ToArray()));
+            Assert.That(expectedNextMax.Skip(OVERHEAD).SequenceEqual(tester.NextMax.ToArray()));
+            Assert.That(expectedNextMinMax.Skip(OVERHEAD).SequenceEqual(tester.NextMinMax.ToArray()));
+            Assert.That(expectedNextDouble.Skip(OVERHEAD).SequenceEqual(tester.NextDouble.ToArray()));
+            Assert.That(expectedNextBytes.Skip(OVERHEAD).SequenceEqual(tester.NextBytes.ToArray()));
         }
     }
 }

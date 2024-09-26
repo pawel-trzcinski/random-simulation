@@ -38,7 +38,7 @@ namespace RandomSimulation.Tests.Factories
             configurationReaderMock.Setup(p => p.Configuration).Returns(configuration);
 
             ImageDownloadTaskFactory factory = new ImageDownloadTaskFactory(randomServiceMock.Object, configurationReaderMock.Object);
-            Assert.True(factory.GetNewTask(url) is ImageDownloadTask);
+            Assert.That(factory.GetNewTask(url) is ImageDownloadTask);
         }
     }
 }

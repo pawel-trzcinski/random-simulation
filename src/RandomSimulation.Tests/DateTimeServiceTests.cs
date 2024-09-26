@@ -11,12 +11,12 @@ namespace RandomSimulation.Tests
         public void ServiceReturnsDate()
         {
             DateTimeService service = new DateTimeService();
-            Assert.AreNotEqual(DateTime.MaxValue, service.UtcNow);
-            Assert.AreNotEqual(DateTime.MinValue, service.UtcNow);
+            Assert.That(DateTime.MaxValue, Is.Not.EqualTo(service.UtcNow));
+            Assert.That(DateTime.MinValue, Is.Not.EqualTo(service.UtcNow));
 
             DateTime serviceUtcNow = service.UtcNow;
 
-            Assert.IsTrue(DateTime.UtcNow - serviceUtcNow < TimeSpan.FromSeconds(1));
+            Assert.That(DateTime.UtcNow - serviceUtcNow < TimeSpan.FromSeconds(1));
         }
     }
 }

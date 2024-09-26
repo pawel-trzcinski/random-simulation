@@ -66,15 +66,15 @@ namespace RandomSimulation.Tests
                 HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
-            Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+            Mock<IConfigurationReader> configurationReaderMock = new();
             configurationReaderMock.Setup(p => p.Configuration).Returns(configuration);
 
             TaskMasterTester tester = new TaskMasterTester(configurationReaderMock.Object, new DateTimeService());
 
-            PokableTaskTester pokableTaskMock1 = new PokableTaskTester(nameof(pokableTaskMock1));
-            PokableTaskTester pokableTaskMock2 = new PokableTaskTester(nameof(pokableTaskMock2));
-            PokableTaskTester pokableTaskMock3 = new PokableTaskTester(nameof(pokableTaskMock3));
-            PokableTaskTester pokableTaskMock4 = new PokableTaskTester(nameof(pokableTaskMock4));
+            PokableTaskTester pokableTaskMock1 = new(nameof(pokableTaskMock1));
+            PokableTaskTester pokableTaskMock2 = new(nameof(pokableTaskMock2));
+            PokableTaskTester pokableTaskMock3 = new(nameof(pokableTaskMock3));
+            PokableTaskTester pokableTaskMock4 = new(nameof(pokableTaskMock4));
 
             tester.Register(pokableTaskMock1);
             tester.Register(pokableTaskMock2);
@@ -85,18 +85,18 @@ namespace RandomSimulation.Tests
             pokableTaskMock2.InvokeEvent();
             tester.WriteTasksToConsole();
 
-            Assert.AreEqual(pokableTaskMock2.Id, tester.Tasks[0].Id);
-            Assert.AreEqual(pokableTaskMock1.Id, tester.Tasks[1].Id);
-            Assert.AreEqual(pokableTaskMock3.Id, tester.Tasks[2].Id);
-            Assert.AreEqual(pokableTaskMock4.Id, tester.Tasks[3].Id);
+            Assert.That(pokableTaskMock2.Id, Is.EqualTo(tester.Tasks[0].Id));
+            Assert.That(pokableTaskMock1.Id, Is.EqualTo(tester.Tasks[1].Id));
+            Assert.That(pokableTaskMock3.Id, Is.EqualTo(tester.Tasks[2].Id));
+            Assert.That(pokableTaskMock4.Id, Is.EqualTo(tester.Tasks[3].Id));
 
             pokableTaskMock3.InvokeEvent();
             tester.WriteTasksToConsole();
 
-            Assert.AreEqual(pokableTaskMock3.Id, tester.Tasks[0].Id);
-            Assert.AreEqual(pokableTaskMock2.Id, tester.Tasks[1].Id);
-            Assert.AreEqual(pokableTaskMock1.Id, tester.Tasks[2].Id);
-            Assert.AreEqual(pokableTaskMock4.Id, tester.Tasks[3].Id);
+            Assert.That(pokableTaskMock3.Id, Is.EqualTo(tester.Tasks[0].Id));
+            Assert.That(pokableTaskMock2.Id, Is.EqualTo(tester.Tasks[1].Id));
+            Assert.That(pokableTaskMock1.Id, Is.EqualTo(tester.Tasks[2].Id));
+            Assert.That(pokableTaskMock4.Id, Is.EqualTo(tester.Tasks[3].Id));
         }
 
         [Test]
@@ -110,19 +110,19 @@ namespace RandomSimulation.Tests
                 HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
-            Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+            Mock<IConfigurationReader> configurationReaderMock = new();
             configurationReaderMock.Setup(p => p.Configuration).Returns(configuration);
 
             TaskMasterTester tester = new TaskMasterTester(configurationReaderMock.Object, new DateTimeService());
 
             int executionsIndicator = 0;
-            Mock<IPokableTask> pokableTaskMock1 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock1 = new();
             pokableTaskMock1.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 1);
-            Mock<IPokableTask> pokableTaskMock2 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock2 = new();
             pokableTaskMock2.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 2);
-            Mock<IPokableTask> pokableTaskMock3 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock3 = new();
             pokableTaskMock3.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 4);
-            Mock<IPokableTask> pokableTaskMock4 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock4 = new();
             pokableTaskMock4.Setup(p => p.Start(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => executionsIndicator += 8);
 
             tester.Register(pokableTaskMock1.Object);
@@ -135,7 +135,7 @@ namespace RandomSimulation.Tests
             tester.StartTasks(source.Token);
             source.Cancel();
 
-            Assert.AreEqual(15, executionsIndicator);
+            Assert.That(executionsIndicator, Is.EqualTo(15));
         }
 
         [Test]
@@ -149,7 +149,7 @@ namespace RandomSimulation.Tests
                 HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
-            Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+            Mock<IConfigurationReader> configurationReaderMock = new();
             configurationReaderMock.Setup(p => p.Configuration).Returns(configuration);
 
             Queue<DateTime> dateQueue = new Queue<DateTime>(2);
@@ -157,7 +157,7 @@ namespace RandomSimulation.Tests
             dateQueue.Enqueue(DateTime.UtcNow + TimeSpan.FromSeconds(1));
             dateQueue.Enqueue(DateTime.UtcNow + TimeSpan.FromDays(1));
 
-            Mock<IDateTimeService> dateTimeServiceMock = new Mock<IDateTimeService>();
+            Mock<IDateTimeService> dateTimeServiceMock = new();
             dateTimeServiceMock.Setup(p => p.UtcNow).Returns(() => dateQueue.Dequeue());
 
             TaskMasterTester tester = new TaskMasterTester(configurationReaderMock.Object, dateTimeServiceMock.Object);
@@ -165,28 +165,28 @@ namespace RandomSimulation.Tests
             CancellationTokenSource source = new CancellationTokenSource();
 
             int pokeIndicator = 0;
-            Mock<IPokableTask> pokableTaskMock1 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock1 = new();
             pokableTaskMock1.Setup(p => p.IsRunning).Returns(false);
             pokableTaskMock1.Setup(p => p.Poke()).Callback(() =>
             {
                 pokeIndicator += 1;
                 source.Cancel();
             });
-            Mock<IPokableTask> pokableTaskMock2 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock2 = new();
             pokableTaskMock2.Setup(p => p.IsRunning).Returns(true);
             pokableTaskMock2.Setup(p => p.Poke()).Callback(() =>
             {
                 pokeIndicator += 2;
                 source.Cancel();
             });
-            Mock<IPokableTask> pokableTaskMock3 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock3 = new();
             pokableTaskMock3.Setup(p => p.IsRunning).Returns(false);
             pokableTaskMock3.Setup(p => p.Poke()).Callback(() =>
             {
                 pokeIndicator += 4;
                 source.Cancel();
             });
-            Mock<IPokableTask> pokableTaskMock4 = new Mock<IPokableTask>();
+            Mock<IPokableTask> pokableTaskMock4 = new();
             pokableTaskMock4.Setup(p => p.IsRunning).Returns(true);
             pokableTaskMock4.Setup(p => p.Poke()).Callback(() =>
             {
@@ -203,7 +203,7 @@ namespace RandomSimulation.Tests
 
             source.Token.WaitHandle.WaitOne(TimeSpan.FromSeconds(2)); // If it does not happen after 2s, then it's a real problem
 
-            Assert.AreEqual(4, pokeIndicator);
+            Assert.That(pokeIndicator, Is.EqualTo(4));
         }
     }
 }

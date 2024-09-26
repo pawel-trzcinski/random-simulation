@@ -19,7 +19,7 @@ namespace RandomSimulation.Tests.Tasks.ImageDownload
                 byte[] bytes = await wrapper.GetImageBytes($"http://127.0.0.1:15500/{TestController.ACTION_VERB}", CancellationToken.None);
                 string guidString = Encoding.UTF8.GetString(bytes);
 
-                Assert.True(Guid.TryParse(guidString, out _));
+                Assert.That(Guid.TryParse(guidString, out _));
             }
         }
     }

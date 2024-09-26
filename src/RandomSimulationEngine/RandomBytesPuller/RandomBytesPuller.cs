@@ -10,7 +10,7 @@ namespace RandomSimulationEngine.RandomBytesPuller
     {
         private readonly IRandomService _randomService;
 
-        private readonly List<ISingleSourceBytesProvider> _providers = new List<ISingleSourceBytesProvider>(10);
+        private readonly List<ISingleSourceBytesProvider> _providers = new(10);
 
         public RandomBytesPuller(IRandomService randomService)
         {

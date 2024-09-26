@@ -21,8 +21,8 @@ namespace RandomSimulation.Tests
     {
         private class EngineTester : Engine
         {
-            private readonly ManualResetEvent _runResetEvent = new ManualResetEvent(false);
-            public ManualResetEvent StartResetEvent { get; } = new ManualResetEvent(false);
+            private readonly ManualResetEvent _runResetEvent = new(false);
+            public ManualResetEvent StartResetEvent { get; } = new(false);
 
             public EngineTester
             (
@@ -72,31 +72,31 @@ namespace RandomSimulation.Tests
             RandomSimulationConfiguration configuration = new RandomSimulationConfiguration
             (
                 ThrottlingConfigurationTests.CreateCorrectConfiguration(),
-                ImageDownloadConfigurationTests.CreateCorrectConfiguration(new[] {url1, url2, url3}),
+                ImageDownloadConfigurationTests.CreateCorrectConfiguration(new[] { url1, url2, url3 }),
                 TasksConfigurationTests.CreateCorrectConfiguration(),
                 HistoryConfigurationTests.CreateCorrectConfiguration()
             );
 
-            Mock<IConfigurationReader> configurationReaderMock = new Mock<IConfigurationReader>();
+            Mock<IConfigurationReader> configurationReaderMock = new();
             configurationReaderMock.Setup(p => p.Configuration).Returns(configuration);
 
-            Mock<IControllerFactory> controllerFactoryMock = new Mock<IControllerFactory>();
+            Mock<IControllerFactory> controllerFactoryMock = new();
             controllerFactoryMock.Setup(p => p.CreateController(It.IsAny<ControllerContext>())).Returns(new TestController());
 
-            Mock<ISourceTask> sourceTaskMock1 = new Mock<ISourceTask>();
+            Mock<ISourceTask> sourceTaskMock1 = new();
             sourceTaskMock1.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(g1.ToByteArray()));
-            Mock<ISourceTask> sourceTaskMock2 = new Mock<ISourceTask>();
+            Mock<ISourceTask> sourceTaskMock2 = new();
             sourceTaskMock2.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(g2.ToByteArray()));
-            Mock<ISourceTask> sourceTaskMock3 = new Mock<ISourceTask>();
+            Mock<ISourceTask> sourceTaskMock3 = new();
             sourceTaskMock3.Setup(p => p.GetBytes(It.IsAny<int>())).Returns(BytesProvidingResult.Create(g3.ToByteArray()));
 
-            Mock<IImageDownloadTaskFactory> imageDownloadTaskFactoryMock = new Mock<IImageDownloadTaskFactory>();
+            Mock<IImageDownloadTaskFactory> imageDownloadTaskFactoryMock = new();
             imageDownloadTaskFactoryMock.Setup(p => p.GetNewTask(url1)).Returns(sourceTaskMock1.Object);
             imageDownloadTaskFactoryMock.Setup(p => p.GetNewTask(url2)).Returns(sourceTaskMock2.Object);
             imageDownloadTaskFactoryMock.Setup(p => p.GetNewTask(url3)).Returns(sourceTaskMock3.Object);
 
             int taskMasterRegistrations = 0;
-            Mock<ITaskMaster> taskMasterMock = new Mock<ITaskMaster>();
+            Mock<ITaskMaster> taskMasterMock = new();
             taskMasterMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<IPokableTask>(_ => { taskMasterRegistrations += 1; });
             taskMasterMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<IPokableTask>(_ => { taskMasterRegistrations += 2; });
             taskMasterMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<IPokableTask>(_ => { taskMasterRegistrations += 4; });
@@ -105,13 +105,13 @@ namespace RandomSimulation.Tests
             taskMasterMock.Setup(p => p.StartTasks(It.IsAny<CancellationToken>())).Callback<CancellationToken>(_ => { tasksMasterTasksStarted = true; });
 
             int randomBytesPullerRegistrations = 0;
-            Mock<IRandomBytesPuller> randomBytesPullerMock = new Mock<IRandomBytesPuller>();
+            Mock<IRandomBytesPuller> randomBytesPullerMock = new();
             randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<ISingleSourceBytesProvider>(_ => { randomBytesPullerRegistrations += 1; });
             randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<ISingleSourceBytesProvider>(_ => { randomBytesPullerRegistrations += 2; });
             randomBytesPullerMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<ISingleSourceBytesProvider>(_ => { randomBytesPullerRegistrations += 4; });
 
             int healthCheckerRegistrations = 0;
-            Mock<IHealthChecker> healthCheckerMock = new Mock<IHealthChecker>();
+            Mock<IHealthChecker> healthCheckerMock = new();
             healthCheckerMock.Setup(p => p.Register(sourceTaskMock1.Object)).Callback<IHealthProvider>(_ => { healthCheckerRegistrations += 1; });
             healthCheckerMock.Setup(p => p.Register(sourceTaskMock2.Object)).Callback<IHealthProvider>(_ => { healthCheckerRegistrations += 2; });
             healthCheckerMock.Setup(p => p.Register(sourceTaskMock3.Object)).Callback<IHealthProvider>(_ => { healthCheckerRegistrations += 4; });
@@ -129,15 +129,15 @@ namespace RandomSimulation.Tests
             Task engineTask = Task.Run(engine.Start);
             engine.StartResetEvent.WaitOne(TimeSpan.FromSeconds(5));
 
-            Assert.AreEqual(7, taskMasterRegistrations);
-            Assert.AreEqual(7, randomBytesPullerRegistrations);
-            Assert.AreEqual(7, healthCheckerRegistrations);
-            Assert.IsTrue(tasksMasterTasksStarted);
+            Assert.That(taskMasterRegistrations, Is.EqualTo(7));
+            Assert.That(randomBytesPullerRegistrations, Is.EqualTo(7));
+            Assert.That(healthCheckerRegistrations, Is.EqualTo(7));
+            Assert.That(tasksMasterTasksStarted);
 
             engine.Stop();
 
             engineTask.Wait(TimeSpan.FromSeconds(10));
-            Assert.AreNotEqual(TaskStatus.Running, engineTask.Status);
+            Assert.That(engineTask.Status, Is.Not.EqualTo(TaskStatus.Running));
         }
     }
 }

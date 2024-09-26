@@ -10,10 +10,7 @@ namespace RandomSimulationEngine.Extensions
 
         public static void CopyTo(this Stream source, Stream destination, CancellationToken cancellationToken)
         {
-            if (destination == null)
-            {
-                throw new ArgumentNullException(nameof(destination));
-            }
+            ArgumentNullException.ThrowIfNull(destination);
 
             if (cancellationToken.IsCancellationRequested)
             {

@@ -30,10 +30,7 @@ namespace RandomSimulationEngine.Rest
         {
             _log.Debug("Creating controller");
 
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             Scope scope = ThreadScopedLifestyle.BeginScope(_container);
 
@@ -47,10 +44,7 @@ namespace RandomSimulationEngine.Rest
         /// <inheritdoc/>
         public void ReleaseController(ControllerContext context, object controller)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
             _log.Debug("Disposing of Scope feature");
             context.HttpContext.Features.Get<Scope>()?.Dispose();

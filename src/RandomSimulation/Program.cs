@@ -11,7 +11,7 @@ namespace RandomSimulation
     {
         private static readonly ILog _log = LogManager.GetLogger(typeof(Program));
 
-        private static readonly AutoResetEvent _closing = new AutoResetEvent(false);
+        private static readonly AutoResetEvent _closing = new(false);
         private static readonly TimeSpan _closingTimeout = TimeSpan.FromSeconds(10);
         private static Task? _mainTask;
         private static IEngine? _engine;

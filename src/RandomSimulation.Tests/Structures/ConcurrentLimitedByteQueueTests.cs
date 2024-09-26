@@ -17,7 +17,7 @@ namespace RandomSimulation.Tests.Structures
         {
             #region empty initial
 
-            new QueueAddingUseCase // 1
+            new // 1
             (
                 new[]
                 {
@@ -28,7 +28,7 @@ namespace RandomSimulation.Tests.Structures
                     "B....."
                 }
             ),
-            new QueueAddingUseCase // less than cap
+            new // less than cap
             (
                 new[]
                 {
@@ -39,7 +39,7 @@ namespace RandomSimulation.Tests.Structures
                     "F..L.."
                 }
             ),
-            new QueueAddingUseCase // full cap
+            new // full cap
             (
                 new[]
                 {
@@ -50,7 +50,7 @@ namespace RandomSimulation.Tests.Structures
                     "F....L"
                 }
             ),
-            new QueueAddingUseCase // cap exceeded
+            new // cap exceeded
             (
                 new[]
                 {
@@ -61,7 +61,7 @@ namespace RandomSimulation.Tests.Structures
                     "F....L"
                 }
             ),
-            new QueueAddingUseCase // cap double excess
+            new // cap double excess
             (
                 new[]
                 {
@@ -77,7 +77,7 @@ namespace RandomSimulation.Tests.Structures
 
             #region 1 element initial
 
-            new QueueAddingUseCase // 1 beginning
+            new // 1 beginning
             (
                 new[]
                 {
@@ -88,7 +88,7 @@ namespace RandomSimulation.Tests.Structures
                     "FL...."
                 }
             ),
-            new QueueAddingUseCase // 1 middle
+            new // 1 middle
             (
                 new[]
                 {
@@ -99,7 +99,7 @@ namespace RandomSimulation.Tests.Structures
                     "..FL.."
                 }
             ),
-            new QueueAddingUseCase // 1 end
+            new // 1 end
             (
                 new[]
                 {
@@ -110,7 +110,7 @@ namespace RandomSimulation.Tests.Structures
                     "L....F"
                 }
             ),
-            new QueueAddingUseCase // staying in boundries beginning
+            new // staying in boundries beginning
             (
                 new[]
                 {
@@ -121,7 +121,7 @@ namespace RandomSimulation.Tests.Structures
                     "F...L."
                 }
             ),
-            new QueueAddingUseCase // staying in boundries middle
+            new // staying in boundries middle
             (
                 new[]
                 {
@@ -132,7 +132,7 @@ namespace RandomSimulation.Tests.Structures
                     "..F.L."
                 }
             ),
-            new QueueAddingUseCase // boundry beginning
+            new // boundry beginning
             (
                 new[]
                 {
@@ -143,7 +143,7 @@ namespace RandomSimulation.Tests.Structures
                     "F....L"
                 }
             ),
-            new QueueAddingUseCase // boundry middle
+            new // boundry middle
             (
                 new[]
                 {
@@ -154,7 +154,7 @@ namespace RandomSimulation.Tests.Structures
                     "..F..L"
                 }
             ),
-            new QueueAddingUseCase // go pass boundry begenning
+            new // go pass boundry begenning
             (
                 new[]
                 {
@@ -165,7 +165,7 @@ namespace RandomSimulation.Tests.Structures
                     "LF...."
                 }
             ),
-            new QueueAddingUseCase // go pass boundry middle
+            new // go pass boundry middle
             (
                 new[]
                 {
@@ -176,7 +176,7 @@ namespace RandomSimulation.Tests.Structures
                     "..LF.."
                 }
             ),
-            new QueueAddingUseCase // go pass boundry end
+            new // go pass boundry end
             (
                 new[]
                 {
@@ -192,7 +192,7 @@ namespace RandomSimulation.Tests.Structures
 
             #region partialy empty initial
 
-            new QueueAddingUseCase // beginning
+            new // beginning
             (
                 new[]
                 {
@@ -203,7 +203,7 @@ namespace RandomSimulation.Tests.Structures
                     "F....L"
                 }
             ),
-            new QueueAddingUseCase // middle
+            new // middle
             (
                 new[]
                 {
@@ -214,7 +214,7 @@ namespace RandomSimulation.Tests.Structures
                     ".F...L"
                 }
             ),
-            new QueueAddingUseCase // end
+            new // end
             (
                 new[]
                 {
@@ -225,7 +225,7 @@ namespace RandomSimulation.Tests.Structures
                     "..LF.."
                 }
             ),
-            new QueueAddingUseCase // staying in boundries beginning
+            new // staying in boundries beginning
             (
                 new[]
                 {
@@ -236,7 +236,7 @@ namespace RandomSimulation.Tests.Structures
                     "F....L"
                 }
             ),
-            new QueueAddingUseCase // staying in boundries middle
+            new // staying in boundries middle
             (
                 new[]
                 {
@@ -247,7 +247,7 @@ namespace RandomSimulation.Tests.Structures
                     ".F...L"
                 }
             ),
-            new QueueAddingUseCase // boundry beginning
+            new // boundry beginning
             (
                 new[]
                 {
@@ -258,7 +258,7 @@ namespace RandomSimulation.Tests.Structures
                     "F....L"
                 }
             ),
-            new QueueAddingUseCase // boundry middle
+            new // boundry middle
             (
                 new[]
                 {
@@ -269,7 +269,7 @@ namespace RandomSimulation.Tests.Structures
                     ".LF..."
                 }
             ),
-            new QueueAddingUseCase // go pass boundry begenning
+            new // go pass boundry begenning
             (
                 new[]
                 {
@@ -280,7 +280,7 @@ namespace RandomSimulation.Tests.Structures
                     ".LF..."
                 }
             ),
-            new QueueAddingUseCase // go pass boundry middle
+            new // go pass boundry middle
             (
                 new[]
                 {
@@ -291,7 +291,7 @@ namespace RandomSimulation.Tests.Structures
                     "L.F..."
                 }
             ),
-            new QueueAddingUseCase // go pass boundry end
+            new // go pass boundry end
             (
                 new[]
                 {
@@ -307,7 +307,7 @@ namespace RandomSimulation.Tests.Structures
 
             #region full initial
 
-            new QueueAddingUseCase // beginning
+            new // beginning
             (
                 new[]
                 {
@@ -318,7 +318,7 @@ namespace RandomSimulation.Tests.Structures
                     ".LF..."
                 }
             ),
-            new QueueAddingUseCase // middle
+            new // middle
             (
                 new[]
                 {
@@ -329,7 +329,7 @@ namespace RandomSimulation.Tests.Structures
                     "...LF."
                 }
             ),
-            new QueueAddingUseCase // end
+            new // end
             (
                 new[]
                 {
@@ -340,7 +340,7 @@ namespace RandomSimulation.Tests.Structures
                     ".LF..."
                 }
             ),
-            new QueueAddingUseCase // staying in boundries middle
+            new // staying in boundries middle
             (
                 new[]
                 {
@@ -360,8 +360,7 @@ namespace RandomSimulation.Tests.Structures
             #region take one
 
             // begenning
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "qw....",
@@ -373,8 +372,7 @@ namespace RandomSimulation.Tests.Structures
             ),
 
             // middle
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "..qw..",
@@ -384,8 +382,7 @@ namespace RandomSimulation.Tests.Structures
                     "q"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "..qwe.",
@@ -397,8 +394,7 @@ namespace RandomSimulation.Tests.Structures
             ),
 
             // end
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "wer..q",
@@ -415,8 +411,7 @@ namespace RandomSimulation.Tests.Structures
             #region take some
 
             // begenning
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "qwe...",
@@ -428,8 +423,7 @@ namespace RandomSimulation.Tests.Structures
             ),
 
             // middle
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "..qwer",
@@ -439,8 +433,7 @@ namespace RandomSimulation.Tests.Structures
                     "qwe"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "..qwer",
@@ -450,8 +443,7 @@ namespace RandomSimulation.Tests.Structures
                     "qw"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "rt.qwe",
@@ -463,8 +455,7 @@ namespace RandomSimulation.Tests.Structures
             ),
 
             //end
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "we...q",
@@ -480,8 +471,7 @@ namespace RandomSimulation.Tests.Structures
             #region take all
 
             // from begenning
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "q.....",
@@ -491,8 +481,7 @@ namespace RandomSimulation.Tests.Structures
                     "q"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "qwe...",
@@ -502,8 +491,7 @@ namespace RandomSimulation.Tests.Structures
                     "qwe"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "qwerty",
@@ -515,8 +503,7 @@ namespace RandomSimulation.Tests.Structures
             ),
 
             //from middle
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "..q...",
@@ -526,8 +513,7 @@ namespace RandomSimulation.Tests.Structures
                     "q"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "..qwe.",
@@ -537,8 +523,7 @@ namespace RandomSimulation.Tests.Structures
                     "qwe"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "...qwe",
@@ -548,8 +533,7 @@ namespace RandomSimulation.Tests.Structures
                     "qwe"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "rt.qwe",
@@ -559,8 +543,7 @@ namespace RandomSimulation.Tests.Structures
                     "qwert"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "rtyqwe",
@@ -572,8 +555,7 @@ namespace RandomSimulation.Tests.Structures
             ),
 
             //from end
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     ".....q",
@@ -583,8 +565,7 @@ namespace RandomSimulation.Tests.Structures
                     "q"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "we...q",
@@ -594,8 +575,7 @@ namespace RandomSimulation.Tests.Structures
                     "qwe"
                 }
             ),
-            new QueueFetchingUseCase
-            (
+            new(
                 new[]
                 {
                     "wertyq",
@@ -617,16 +597,16 @@ namespace RandomSimulation.Tests.Structures
             QueueTester queue = useCase.CreateQueue();
             queue.Enqueue(useCase.BufferAdded);
 
-            Assert.IsTrue(useCase.ExpectedState.SequenceEqual(queue.Queue));
-            Assert.AreEqual(useCase.ExpectedFirstIndex, queue.CurrentFirstIndex);
-            Assert.AreEqual(useCase.ExpectedLastIndex, queue.CurrentLastIndex);
+            Assert.That(useCase.ExpectedState.SequenceEqual(queue.Queue));
+            Assert.That(useCase.ExpectedFirstIndex, Is.EqualTo(queue.CurrentFirstIndex));
+            Assert.That(useCase.ExpectedLastIndex, Is.EqualTo(queue.CurrentLastIndex));
         }
 
         [Test]
         public void FetchingFromEmptyQueueFails()
         {
             ConcurrentLimitedByteQueue queue = new ConcurrentLimitedByteQueue(6);
-            Assert.IsFalse(queue.TryFetch(1, out _));
+            Assert.That(queue.TryFetch(1, out _), Is.False);
         }
 
         [TestCase(1)]
@@ -641,7 +621,7 @@ namespace RandomSimulation.Tests.Structures
                 queue.Enqueue(1);
             }
 
-            Assert.IsFalse(queue.TryFetch(queueCount + 1, out _));
+            Assert.That(queue.TryFetch(queueCount + 1, out _), Is.False);
         }
 
         [Test]
@@ -651,16 +631,16 @@ namespace RandomSimulation.Tests.Structures
 
             QueueTester queue = useCase.CreateQueue();
             int originalQueueLength = queue.Count;
-            Assert.IsTrue(queue.TryFetch(useCase.FetchCount, out byte[] fetchResult));
+            Assert.That(queue.TryFetch(useCase.FetchCount, out byte[] fetchResult));
 
             if (queue.Count > 0)
             {
-                Assert.AreEqual(useCase.ExpectedFirstIndex, queue.CurrentFirstIndex);
-                Assert.AreEqual(useCase.ExpectedLastIndex, queue.CurrentLastIndex);
+                Assert.That(useCase.ExpectedFirstIndex, Is.EqualTo(queue.CurrentFirstIndex));
+                Assert.That(useCase.ExpectedLastIndex, Is.EqualTo(queue.CurrentLastIndex));
             }
 
-            Assert.AreEqual(originalQueueLength - useCase.FetchCount, queue.Count);
-            Assert.IsTrue(useCase.FetchResult.SequenceEqual(fetchResult));
+            Assert.That(originalQueueLength - useCase.FetchCount, Is.EqualTo(queue.Count));
+            Assert.That(useCase.FetchResult.SequenceEqual(fetchResult));
         }
     }
 }

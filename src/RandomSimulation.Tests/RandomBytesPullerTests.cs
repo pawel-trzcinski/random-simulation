@@ -63,7 +63,7 @@ namespace RandomSimulation.Tests
                 puller.Register(sourceMock.Object);
             }
 
-            Assert.True(puller.Pull(1000).SequenceEqual(okArray));
+            Assert.That(puller.Pull(1000).SequenceEqual(okArray));
         }
     }
 }

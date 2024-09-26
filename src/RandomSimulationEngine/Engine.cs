@@ -32,7 +32,7 @@ namespace RandomSimulationEngine
         private readonly IRandomBytesPuller _randomBytesPuller;
         private readonly IHealthChecker _healthChecker;
 
-        private readonly CancellationTokenSource _tokenSource = new CancellationTokenSource();
+        private readonly CancellationTokenSource _tokenSource = new();
 
         public Engine
         (

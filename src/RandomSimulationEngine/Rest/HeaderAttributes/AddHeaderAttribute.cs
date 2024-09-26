@@ -1,4 +1,5 @@
 ﻿using System;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.Filters;
 
 namespace RandomSimulationEngine.Rest.HeaderAttributes
@@ -25,12 +26,9 @@ namespace RandomSimulationEngine.Rest.HeaderAttributes
         /// <inheritdoc/>
         public override void OnResultExecuting(ResultExecutingContext context)
         {
-            if (context == null)
-            {
-                throw new ArgumentNullException(nameof(context));
-            }
+            ArgumentNullException.ThrowIfNull(context);
 
-            context.HttpContext.Response.Headers.Add(_name, new[] {_value});
+            context.HttpContext.Response.Headers.Append(_name, new[] {_value});
             base.OnResultExecuting(context);
         }
     }

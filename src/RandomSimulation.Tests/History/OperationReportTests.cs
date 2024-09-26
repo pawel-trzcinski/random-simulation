@@ -19,7 +19,7 @@ namespace RandomSimulation.Tests.History
             Histogram histogram = new Histogram(testArray,10);
 
             OperationReport report = new OperationReport(histogram);
-            Assert.AreEqual("31;13;10;9;7;7;6;6;5;6", report.Csv);
+            Assert.That(report.Csv, Is.EqualTo("31;13;10;9;7;7;6;6;5;6"));
         }
     }
 }

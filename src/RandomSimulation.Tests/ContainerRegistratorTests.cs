@@ -9,7 +9,7 @@ namespace RandomSimulation.Tests
         [Test]
         public void ContainerRegistersCorrectly()
         {
-            Assert.DoesNotThrow(() => { Assert.IsNotNull(ContainerRegistrator.Register()); });
+            Assert.That(ContainerRegistrator.Register(), Is.Not.Null);
         }
     }
 }

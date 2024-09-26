@@ -34,7 +34,7 @@ namespace RandomSimulation.Tests.Extensions
 
                 byte[] outputArray = outputStream.ToArray();
 
-                Assert.True(inputArray.SequenceEqual(outputArray));
+                Assert.That(inputArray.SequenceEqual(outputArray));
             }
         }
 
@@ -63,7 +63,7 @@ namespace RandomSimulation.Tests.Extensions
 
                     byte[] outputArray = outputStream.ToArray();
 
-                    Assert.Zero(outputArray.Length);
+                    Assert.That(outputArray.Length, Is.Zero);
                 }
             }
         }
@@ -105,8 +105,8 @@ namespace RandomSimulation.Tests.Extensions
 
                     task.Wait(_safetyTestTime);
 
-                    Assert.True(task.Result.Length < dataLength);
-                    Assert.True(inputArray.Take(task.Result.Length).SequenceEqual(task.Result));
+                    Assert.That(task.Result.Length < dataLength);
+                    Assert.That(inputArray.Take(task.Result.Length).SequenceEqual(task.Result));
                 }
             }
         }
