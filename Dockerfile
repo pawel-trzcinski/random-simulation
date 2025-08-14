@@ -1,4 +1,4 @@
-FROM mcr.microsoft.com/dotnet/sdk:8.0-alpine as build-stage
+FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build-stage
 
 WORKDIR /app
 COPY src .
@@ -9,14 +9,13 @@ RUN dotnet test RandomSimulation.sln \
 	--logger:"console;verbosity=detailed" \
 	--no-build
 
-
-RUN dotnet publish /app/RandomSimulation/RandomSimulation.csproj -r linux-musl-x64 /p:ContainerFamily=alpine --self-contained -c Release -o /out
+RUN dotnet publish /app/RandomSimulation/RandomSimulation.csproj -c Release -o /out
 
 WORKDIR /out
 RUN rm -f *.pdb
 
 #####################################################
-FROM mcr.microsoft.com/dotnet/runtime-deps:8.0-alpine
+FROM mcr.microsoft.com/dotnet/aspnet:8.0
 
 COPY --from=build-stage /out /out
 
@@ -26,4 +25,4 @@ LABEL SUMMARY="RandomSimulation RestService"
 EXPOSE 15500 
 
 WORKDIR /out
-ENTRYPOINT [ "/out/RandomSimulation" ]
+ENTRYPOINT [ "dotnet", "RandomSimulation.dll" ]
